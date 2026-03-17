@@ -71,9 +71,9 @@ body.day .pill-resolved{background:#d5edc0;color:#1e4a00}
 .filter-label{font-size:11px;color:var(--text3)}
 .arch-toggle{font-size:11px;color:var(--p3);cursor:pointer;background:none;border:none;font-family:var(--font);padding:0}
 
-/* LIST — extra column for quick-action button */
-.list-header{display:grid;grid-template-columns:95px 1fr 65px 90px 80px 60px 80px 60px;gap:6px;padding:6px 10px;border-bottom:0.5px solid var(--border);font-size:10px;color:var(--text3);letter-spacing:0.4px}
-.list-row{display:grid;grid-template-columns:95px 1fr 65px 90px 80px 60px 80px 60px;gap:6px;padding:var(--row-padding) 10px;border-bottom:0.5px solid var(--border);align-items:center;cursor:pointer;position:relative}
+/* LIST — id | title | pri | status | due | est | tags | [quick] | [edit] */
+.list-header{display:grid;grid-template-columns:95px 1fr 65px 90px 80px 60px 80px 58px 28px;gap:6px;padding:6px 10px;border-bottom:0.5px solid var(--border);font-size:10px;color:var(--text3);letter-spacing:0.4px}
+.list-row{display:grid;grid-template-columns:95px 1fr 65px 90px 80px 60px 80px 58px 28px;gap:6px;padding:var(--row-padding) 10px;border-bottom:0.5px solid var(--border);align-items:center;cursor:pointer;position:relative}
 .list-row:hover{background:var(--bg2)}
 .list-row.archived-row{opacity:0.45}
 .list-row.child-row{background:rgba(255,255,255,0.02)}
@@ -376,15 +376,17 @@ function renderList(rootTickets){
       <div style="font-size:11px;color:var(--text2)">${fmtDate(t.due)}</div>
       <div style="font-size:11px;color:var(--text2)">${t.estimate?t.estimate+'h':'—'}</div>
       <div class="ticket-tags">${(t.tags||[]).slice(0,2).map(g=>`<span class="tag-pill">${g}</span>`).join('')}</div>
-      <div class="row-action" onclick="event.stopPropagation()">
+      <div style="display:flex;align-items:center;justify-content:center" onclick="event.stopPropagation()">
         ${canQuick?`<button class="btn-quick-prog" onclick="quickProgress('${t._id}')">▶ Start</button>`:''}
+      </div>
+      <div style="display:flex;align-items:center;justify-content:flex-end" onclick="event.stopPropagation()">
         <button class="icon-btn" onclick="openEdit('${t._id}')">✎</button>
       </div>
     </div>`;
     if(hasKids&&isExp)dc.forEach(c=>renderRow(c,depth+1));
   }
   rootTickets.forEach(t=>renderRow(t,0));
-  return`<div><div class="list-header"><div>ID</div><div>TITLE</div><div>PRIORITY</div><div>STATUS</div><div>DUE</div><div>EST</div><div>TAGS</div><div></div></div>${rows}</div>`;
+  return`<div><div class="list-header"><div>ID</div><div>TITLE</div><div>PRIORITY</div><div>STATUS</div><div>DUE</div><div>EST</div><div>TAGS</div><div></div><div></div></div>${rows}</div>`;
 }
 
 function renderKanban(){
