@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TICKR</title>
+<title>Stickey</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -11,23 +11,33 @@
   --border:#333;--border2:#444;
   --text:#e8e8e8;--text2:#999;--text3:#666;
   --p1:#e24b4a;--p2:#ef9f27;--p3:#378add;--p4:#639922;
-  --accent:#378add;--radius:6px;--font:'Courier New',monospace
+  --accent:#378add;--radius:6px;--font:'Courier New',monospace;
+  --font-size:13px;--row-padding:8px
 }
-body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:13px;min-height:100vh}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:var(--font-size);min-height:100vh;transition:background 0.2s,color 0.2s}
+body.day{
+  --bg:#f5f0e8;--bg2:#ede8df;--bg3:#e3ddd3;--bg4:#d9d2c7;
+  --border:#c9c2b5;--border2:#b8b0a2;
+  --text:#1a1a1a;--text2:#555;--text3:#888;
+  --p1:#c0302f;--p2:#b87010;--p3:#1a5fa0;--p4:#3a6b10;--accent:#1a5fa0
+}
+body.text-sm{--font-size:11px}
+body.text-md{--font-size:13px}
+body.text-lg{--font-size:15px}
+body.density-compact{--row-padding:4px}
+body.density-comfortable{--row-padding:12px}
 
-/* AUTH SCREEN */
 #auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh}
 .auth-box{background:var(--bg2);border:0.5px solid var(--border);border-radius:10px;padding:40px;width:320px;text-align:center}
 .auth-logo{font-size:22px;font-weight:500;margin-bottom:8px;letter-spacing:-0.5px}
 .auth-logo span{color:var(--p3)}
 .auth-box p{color:var(--text2);font-size:12px;margin-bottom:24px}
-.auth-box input{width:100%;padding:10px 12px;background:var(--bg3);border:0.5px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--font);font-size:13px;margin-bottom:10px;text-align:center;letter-spacing:2px}
+.auth-box input{width:100%;padding:10px 12px;background:var(--bg3);border:0.5px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--font);font-size:var(--font-size);margin-bottom:10px;text-align:center;letter-spacing:2px}
 .auth-box input:focus{outline:none;border-color:var(--accent)}
-.auth-box button{width:100%;padding:10px;background:transparent;border:0.5px solid var(--accent);border-radius:var(--radius);color:var(--accent);font-family:var(--font);font-size:13px;cursor:pointer}
+.auth-box button{width:100%;padding:10px;background:transparent;border:0.5px solid var(--accent);border-radius:var(--radius);color:var(--accent);font-family:var(--font);font-size:var(--font-size);cursor:pointer}
 .auth-box button:hover{background:rgba(55,138,221,0.1)}
 .auth-error{color:var(--p1);font-size:11px;margin-top:8px;min-height:16px}
 
-/* MAIN APP */
 #app{display:none;padding:16px;max-width:1200px;margin:0 auto}
 .topbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
 .logo{font-size:15px;font-weight:500;letter-spacing:-0.5px;padding-right:12px;border-right:0.5px solid var(--border)}
@@ -37,59 +47,69 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:13
 .tab.active{background:var(--bg3);color:var(--text);border-color:var(--border2)}
 .btn-new{padding:5px 14px;border:0.5px solid var(--p3);border-radius:var(--radius);cursor:pointer;font-size:12px;font-family:var(--font);background:transparent;color:var(--p3)}
 .btn-new:hover{background:rgba(55,138,221,0.1)}
+.btn-settings{padding:5px 10px;border:0.5px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:14px;font-family:var(--font);background:transparent;color:var(--text2)}
+.btn-settings:hover{background:var(--bg3);color:var(--text)}
 
-/* STATS */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
 .stat{background:var(--bg2);border-radius:var(--radius);padding:10px 12px;border:0.5px solid var(--border)}
 .stat-label{font-size:10px;color:var(--text3);margin-bottom:3px;letter-spacing:0.4px}
 .stat-val{font-size:20px;font-weight:500}
 .p1c{color:var(--p1)}.p2c{color:var(--p2)}.p3c{color:var(--p3)}.p4c{color:var(--p4)}
 
-/* PILLS */
 .pill{display:inline-flex;align-items:center;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:500;letter-spacing:0.3px}
 .pill-p1{background:#501313;color:#f09595}.pill-p2{background:#412402;color:#fac775}
 .pill-p3{background:#042c53;color:#85b7eb}.pill-p4{background:#173404;color:#97c459}
-.pill-open{background:var(--bg3);color:var(--text2);border:0.5px solid var(--border)}
+body.day .pill-p1{background:#fcd0d0;color:#8b1a1a}
+body.day .pill-p2{background:#fde8c0;color:#7a4a00}
+body.day .pill-p3{background:#cce0f5;color:#0d3d6b}
+body.day .pill-p4{background:#d5edc0;color:#1e4a00}
+.pill-idea{background:var(--bg3);color:var(--text2);border:0.5px solid var(--border)}
 .pill-progress{background:#412402;color:#fac775}
 .pill-resolved{background:#173404;color:#97c459}
-.pill-archived{background:#1a1a1a;color:#666}
+.pill-archived{background:var(--bg3);color:var(--text3)}
+body.day .pill-progress{background:#fde8c0;color:#7a4a00}
+body.day .pill-resolved{background:#d5edc0;color:#1e4a00}
 .tag-pill{background:var(--bg3);border:0.5px solid var(--border);color:var(--text2);padding:2px 6px;border-radius:3px;font-size:10px}
 
-/* FILTERS */
 .filters{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
 .filters select{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--font);font-size:11px;padding:4px 8px;cursor:pointer}
 .filter-label{font-size:11px;color:var(--text3)}
 .arch-toggle{font-size:11px;color:var(--p3);cursor:pointer;background:none;border:none;font-family:var(--font);padding:0}
 
-/* LIST VIEW */
-.list-header{display:grid;grid-template-columns:75px 1fr 65px 90px 80px 60px 80px 36px;gap:6px;padding:6px 10px;border-bottom:0.5px solid var(--border);font-size:10px;color:var(--text3);letter-spacing:0.4px}
-.list-row{display:grid;grid-template-columns:75px 1fr 65px 90px 80px 60px 80px 36px;gap:6px;padding:8px 10px;border-bottom:0.5px solid var(--border);align-items:center;cursor:pointer}
+.list-header{display:grid;grid-template-columns:95px 1fr 65px 90px 80px 60px 80px 36px;gap:6px;padding:6px 10px;border-bottom:0.5px solid var(--border);font-size:10px;color:var(--text3);letter-spacing:0.4px}
+.list-row{display:grid;grid-template-columns:95px 1fr 65px 90px 80px 60px 80px 36px;gap:6px;padding:var(--row-padding) 10px;border-bottom:0.5px solid var(--border);align-items:center;cursor:pointer}
 .list-row:hover{background:var(--bg2)}
 .list-row.archived-row{opacity:0.45}
-.ticket-id{font-size:10px;color:var(--text3)}
-.ticket-title{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list-row.child-row{background:rgba(255,255,255,0.02)}
+.list-row.child-row:hover{background:var(--bg2)}
+body.day .list-row.child-row{background:rgba(0,0,0,0.02)}
+.ticket-id{font-size:10px;color:var(--text3);display:flex;align-items:center;gap:3px;min-width:0}
+.ticket-id-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ticket-title{font-size:var(--font-size);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ticket-tags{display:flex;gap:3px;flex-wrap:wrap}
 .row-action{display:flex;gap:4px;justify-content:flex-end}
 .icon-btn{width:24px;height:24px;border:none;background:transparent;cursor:pointer;color:var(--text3);font-size:14px;display:flex;align-items:center;justify-content:center;border-radius:4px}
 .icon-btn:hover{background:var(--bg3);color:var(--text)}
+.expand-btn{width:16px;height:16px;border:none;background:transparent;cursor:pointer;color:var(--text3);font-size:9px;display:inline-flex;align-items:center;justify-content:center;border-radius:3px;flex-shrink:0;padding:0;line-height:1}
+.expand-btn:hover{background:var(--bg3);color:var(--text)}
 
-/* KANBAN */
 .kanban{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-items:start}
 .col-header{font-size:11px;font-weight:500;letter-spacing:0.5px;padding:0 0 8px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--border);margin-bottom:8px}
 .col-count{background:var(--bg3);border-radius:10px;padding:1px 7px;font-size:10px}
 .k-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:10px;margin-bottom:8px;cursor:pointer}
 .k-card:hover{border-color:var(--border2)}
+.k-child{margin-left:12px;border-left:2px solid var(--border2)}
 .k-card-id{font-size:10px;color:var(--text3);margin-bottom:4px}
-.k-card-title{font-size:13px;margin-bottom:8px;line-height:1.4}
+.k-card-title{font-size:var(--font-size);margin-bottom:8px;line-height:1.4}
 .k-card-meta{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
 
-/* MODAL OVERLAY */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;z-index:100;overflow-y:auto}
+body.day .overlay{background:rgba(0,0,0,0.4)}
 .modal{background:var(--bg2);border:0.5px solid var(--border2);border-radius:10px;width:100%;max-width:560px;padding:22px}
 .modal-title{font-size:14px;font-weight:500;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;color:var(--text)}
 .field-group{margin-bottom:12px}
 .field-label{font-size:10px;color:var(--text3);margin-bottom:4px;letter-spacing:0.4px}
-input,select,textarea{width:100%;background:var(--bg3);border:0.5px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--font);font-size:12px;padding:8px 10px}
+input,select,textarea{width:100%;background:var(--bg3);border:0.5px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--font);font-size:var(--font-size);padding:8px 10px}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
 textarea{resize:vertical;min-height:70px}
 select option{background:var(--bg3)}
@@ -98,14 +118,37 @@ select option{background:var(--bg3)}
 .btn-pri{padding:6px 18px;border:0.5px solid var(--p3);border-radius:var(--radius);cursor:pointer;font-size:12px;font-family:var(--font);background:rgba(55,138,221,0.1);color:var(--p3)}
 .btn-sec{padding:6px 14px;border:0.5px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:12px;font-family:var(--font);background:transparent;color:var(--text2)}
 .btn-danger{padding:6px 14px;border:0.5px solid var(--p1);border-radius:var(--radius);cursor:pointer;font-size:12px;font-family:var(--font);background:transparent;color:var(--p1)}
+.btn-child{padding:6px 14px;border:0.5px solid var(--p4);border-radius:var(--radius);cursor:pointer;font-size:12px;font-family:var(--font);background:transparent;color:var(--p4)}
 .detail-section{margin-bottom:14px;padding-bottom:14px;border-bottom:0.5px solid var(--border)}
 .detail-row{display:grid;grid-template-columns:110px 1fr;gap:8px;margin-bottom:6px;font-size:12px}
 .detail-key{color:var(--text3)}
 .comment-item{background:var(--bg3);border-radius:var(--radius);padding:8px 10px;margin-bottom:6px;font-size:12px;line-height:1.5;border:0.5px solid var(--border)}
 .comment-ts{font-size:10px;color:var(--text3);margin-top:4px}
 .empty-col{font-size:11px;color:var(--text3);padding:12px 0;text-align:center}
+.child-link{font-size:11px;color:var(--p3);cursor:pointer;background:none;border:none;font-family:var(--font);padding:0;text-align:left}
+.child-link:hover{text-decoration:underline}
+.parent-badge{display:inline-flex;align-items:center;gap:4px;background:var(--bg3);border:0.5px solid var(--border);border-radius:3px;padding:2px 8px;font-size:10px;color:var(--text2);cursor:pointer}
+.parent-badge:hover{border-color:var(--border2);color:var(--text)}
 
-/* LOADING / TOAST */
+.settings-modal{max-width:420px}
+.settings-section{margin-bottom:20px;padding-bottom:20px;border-bottom:0.5px solid var(--border)}
+.settings-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.settings-section-title{font-size:10px;color:var(--text3);letter-spacing:0.5px;margin-bottom:12px}
+.setting-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;font-size:12px}
+.setting-row:last-child{margin-bottom:0}
+.setting-label{color:var(--text2)}
+.seg{display:flex;border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.seg button{padding:5px 12px;border:none;background:transparent;color:var(--text2);font-family:var(--font);font-size:11px;cursor:pointer;border-right:0.5px solid var(--border)}
+.seg button:last-child{border-right:none}
+.seg button.active{background:var(--bg3);color:var(--text)}
+.seg button:hover:not(.active){background:var(--bg4)}
+.toggle{position:relative;width:36px;height:20px}
+.toggle input{opacity:0;width:0;height:0;position:absolute}
+.toggle-track{position:absolute;inset:0;background:var(--border2);border-radius:10px;cursor:pointer;transition:background 0.2s}
+.toggle input:checked+.toggle-track{background:var(--accent)}
+.toggle-thumb{position:absolute;top:3px;left:3px;width:14px;height:14px;background:#fff;border-radius:50%;transition:transform 0.2s;pointer-events:none}
+.toggle input:checked~.toggle-thumb{transform:translateX(16px)}
+
 .loading{text-align:center;padding:60px;color:var(--text3);font-size:12px}
 .toast{position:fixed;bottom:20px;right:20px;background:var(--bg3);border:0.5px solid var(--border2);border-radius:var(--radius);padding:10px 16px;font-size:12px;z-index:200;opacity:0;transition:opacity 0.2s}
 .toast.show{opacity:1}
@@ -114,154 +157,155 @@ select option{background:var(--bg3)}
 </head>
 <body>
 
-<!-- AUTH -->
 <div id="auth-screen">
   <div class="auth-box">
-    <div class="auth-logo"><span>[</span>TICKR<span>]</span></div>
-    <p>Personal IT ticket tracker</p>
+    <div class="auth-logo"><span>[</span>Stickey<span>]</span></div>
+    <p>Personal planner</p>
     <input type="password" id="pw-input" placeholder="enter password" onkeydown="if(event.key==='Enter')tryAuth()">
     <button onclick="tryAuth()">SIGN IN</button>
     <div class="auth-error" id="auth-error"></div>
   </div>
 </div>
 
-<!-- MAIN APP -->
 <div id="app"></div>
 <div class="toast" id="toast"></div>
 
 <script>
-const STATUSES = ['Open','In Progress','Resolved','Archived'];
-const PRIORITIES = ['P1','P2','P3','P4'];
-const DEFAULT_TAGS = ['bug','feature','chore','personal','work','health','finance','learning'];
+const STATUSES=['Idea','In Progress','Resolved','Archived'];
+const PRIORITIES=['P1','P2','P3','P4'];
+const DEFAULT_TAGS=['bug','feature','chore','personal','work','health','finance','learning'];
+const SETTINGS_KEY='stickey_settings';
 
-let apiSecret = sessionStorage.getItem('tickr_secret') || '';
-let tickets = [];
-let view = 'list';
-let filterStatus = '';
-let filterPriority = '';
-let filterTag = '';
-let showArchived = false;
-let modal = null;
-let editTicket = null;
-let detailTicket = null;
-let nextId = 1;
+const defaultSettings={theme:'night',textSize:'md',density:'comfortable',defaultView:'list',defaultPriority:'P3',confirmArchive:true,showStats:true};
+let settings={...defaultSettings,...JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}')};
+function saveSettings(){localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));applySettings();}
+function applySettings(){
+  const b=document.body;
+  b.classList.toggle('day',settings.theme==='day');
+  b.classList.remove('text-sm','text-md','text-lg');b.classList.add('text-'+settings.textSize);
+  b.classList.remove('density-compact','density-comfortable');b.classList.add('density-'+settings.density);
+}
+applySettings();
 
-// --- AUTH ---
-async function tryAuth() {
-  const pw = document.getElementById('pw-input').value.trim();
-  if (!pw) return;
-  const res = await fetch('/api/tickets', { headers: { 'x-api-secret': pw } });
-  if (res.status === 401) {
-    document.getElementById('auth-error').textContent = 'incorrect password';
-    return;
+let apiSecret=sessionStorage.getItem('stickey_secret')||'';
+let tickets=[];
+let view=settings.defaultView;
+let filterStatus='',filterPriority='',filterTag='';
+let showArchived=false;
+let modal=null,editTicket=null,detailTicket=null,newChildParent=null;
+let expandedIds=new Set();
+
+// ── NUMBERING ─────────────────────────────────────────────
+function letterSuffix(n){
+  const chars='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const base=chars.length;
+  if(n<base) return chars[n];
+  n-=base;
+  let result='';
+  do{result=chars[n%base]+result;n=Math.floor(n/base)-1;}while(n>=0);
+  return result;
+}
+
+function nextSuffixType(parentRecordId){
+  const last=parentRecordId.slice(-1);
+  return /\d/.test(last)?'letter':'number';
+}
+
+function nextChildRecordId(parentRecordId){
+  const children=tickets.filter(t=>t.parentRecordId===parentRecordId);
+  const type=nextSuffixType(parentRecordId);
+  if(type==='letter'){
+    const used=new Set(children.map(t=>t.recordId.slice(parentRecordId.length)));
+    let i=0; while(used.has(letterSuffix(i)))i++;
+    return parentRecordId+letterSuffix(i);
+  } else {
+    const used=new Set(children.map(t=>parseInt(t.recordId.slice(parentRecordId.length))||0));
+    let i=1; while(used.has(i))i++;
+    return parentRecordId+String(i);
   }
-  apiSecret = pw;
-  sessionStorage.setItem('tickr_secret', pw);
-  const data = await res.json();
-  tickets = data;
-  computeNextId();
-  document.getElementById('auth-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
+}
+
+function nextRootRecordId(){
+  const existing=new Set(tickets.map(t=>t.recordId));
+  const rootNums=tickets.filter(t=>!t.parentRecordId).map(t=>parseInt(t.recordId)||0);
+  let candidate=(rootNums.length?Math.max(...rootNums):0)+1;
+  while(existing.has(String(candidate)))candidate++;
+  return String(candidate);
+}
+
+// ── AUTH ──────────────────────────────────────────────────
+async function tryAuth(){
+  const pw=document.getElementById('pw-input').value.trim();
+  if(!pw)return;
+  const res=await fetch('/api/tickets',{headers:{'x-api-secret':pw}});
+  if(res.status===401){document.getElementById('auth-error').textContent='incorrect password';return;}
+  apiSecret=pw; sessionStorage.setItem('stickey_secret',pw);
+  tickets=await res.json();
+  document.getElementById('auth-screen').style.display='none';
+  document.getElementById('app').style.display='block';
   render();
 }
-
-// Auto-login if secret is already in sessionStorage
-if (apiSecret) {
-  fetch('/api/tickets', { headers: { 'x-api-secret': apiSecret } })
-    .then(r => r.ok ? r.json() : null)
-    .then(data => {
-      if (data) {
-        tickets = data;
-        computeNextId();
-        document.getElementById('auth-screen').style.display = 'none';
-        document.getElementById('app').style.display = 'block';
-        render();
-      } else {
-        sessionStorage.removeItem('tickr_secret');
-        apiSecret = '';
-      }
-    });
+if(apiSecret){
+  fetch('/api/tickets',{headers:{'x-api-secret':apiSecret}}).then(r=>r.ok?r.json():null).then(data=>{
+    if(data){tickets=data;document.getElementById('auth-screen').style.display='none';document.getElementById('app').style.display='block';render();}
+    else{sessionStorage.removeItem('stickey_secret');apiSecret='';}
+  });
 }
 
-function computeNextId() {
-  const nums = tickets.map(t => parseInt((t.ticketId||'TKT-0000').split('-')[1]||0));
-  nextId = nums.length ? Math.max(...nums) + 1 : 1;
-}
-
-function newTicketId() {
-  return `TKT-${String(nextId++).padStart(4,'0')}`;
-}
-
-// --- API CALLS ---
-async function apiFetch(path, method='GET', body=null) {
-  const opts = { method, headers: { 'x-api-secret': apiSecret, 'Content-Type': 'application/json' } };
-  if (body) opts.body = JSON.stringify(body);
-  const res = await fetch(path, opts);
-  if (!res.ok) throw new Error(await res.text());
+async function apiFetch(path,method='GET',body=null){
+  const opts={method,headers:{'x-api-secret':apiSecret,'Content-Type':'application/json'}};
+  if(body) opts.body=JSON.stringify(body);
+  const res=await fetch(path,opts);
+  if(!res.ok) throw new Error(await res.text());
   return res.json();
 }
-
-function toast(msg, err=false) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = 'toast show' + (err?' error':'');
-  setTimeout(() => el.className='toast', 2200);
+function toast(msg,err=false){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.className='toast show'+(err?' error':'');
+  setTimeout(()=>el.className='toast',2200);
 }
-
-// --- HELPERS ---
-function esc(s) {
-  if (!s) return '';
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-function fmtDate(d) { if(!d) return '—'; return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric'}); }
-function fmtTs(ts) {
-  const d = new Date(ts);
-  return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' '+d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
-}
-function pilStatus(s) {
-  const m={Open:'pill-open','In Progress':'pill-progress',Resolved:'pill-resolved',Archived:'pill-archived'};
-  return `<span class="pill ${m[s]||'pill-open'}">${s}</span>`;
-}
-function pilPri(p) { return `<span class="pill pill-${p.toLowerCase()}">${p}</span>`; }
-function allTags() {
-  const tags = new Set(DEFAULT_TAGS);
-  tickets.forEach(t=>(t.tags||[]).forEach(g=>tags.add(g)));
-  return [...tags];
-}
-function getTickets() {
-  let t = tickets;
-  if (!showArchived) t = t.filter(x=>x.status!=='Archived');
-  if (filterStatus) t = t.filter(x=>x.status===filterStatus);
-  if (filterPriority) t = t.filter(x=>x.priority===filterPriority);
-  if (filterTag) t = t.filter(x=>x.tags&&x.tags.includes(filterTag));
+function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function fmtDate(d){if(!d)return'—';return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric'});}
+function fmtTs(ts){const d=new Date(ts);return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' '+d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});}
+function pilStatus(s){const m={Idea:'pill-idea','In Progress':'pill-progress',Resolved:'pill-resolved',Archived:'pill-archived'};return `<span class="pill ${m[s]||'pill-idea'}">${s}</span>`;}
+function pilPri(p){return `<span class="pill pill-${p.toLowerCase()}">${p}</span>`;}
+function allTags(){const tags=new Set(DEFAULT_TAGS);tickets.forEach(t=>(t.tags||[]).forEach(g=>tags.add(g)));return[...tags];}
+function getTickets(){
+  let t=tickets;
+  if(!showArchived)t=t.filter(x=>x.status!=='Archived');
+  if(filterStatus)t=t.filter(x=>x.status===filterStatus);
+  if(filterPriority)t=t.filter(x=>x.priority===filterPriority);
+  if(filterTag)t=t.filter(x=>x.tags&&x.tags.includes(filterTag));
   return t;
 }
+function getChildren(recordId){return tickets.filter(t=>t.parentRecordId===recordId);}
 
-// --- RENDER ---
-function render() {
-  const app = document.getElementById('app');
-  const visible = getTickets();
-  const total = tickets.filter(x=>x.status!=='Archived').length;
-  const p1 = tickets.filter(x=>x.priority==='P1'&&x.status!=='Archived'&&x.status!=='Resolved').length;
-  const inprog = tickets.filter(x=>x.status==='In Progress').length;
-  const resolved = tickets.filter(x=>x.status==='Resolved').length;
+// ── RENDER ────────────────────────────────────────────────
+function render(){
+  const app=document.getElementById('app');
+  const allVis=getTickets();
+  const rootVis=allVis.filter(t=>!t.parentRecordId);
+  const total=tickets.filter(x=>x.status!=='Archived'&&!x.parentRecordId).length;
+  const p1=tickets.filter(x=>x.priority==='P1'&&x.status!=='Archived'&&x.status!=='Resolved').length;
+  const inprog=tickets.filter(x=>x.status==='In Progress').length;
+  const resolved=tickets.filter(x=>x.status==='Resolved').length;
 
-  let html = `<div class="topbar">
-    <div class="logo"><span>[</span>TICKR<span>]</span></div>
-    <div class="stats" style="margin:0;flex:1;min-width:280px">
+  let html=`<div class="topbar">
+    <div class="logo"><span>[</span>Stickey<span>]</span></div>
+    ${settings.showStats?`<div class="stats" style="margin:0;flex:1;min-width:280px">
       <div class="stat"><div class="stat-label">OPEN</div><div class="stat-val">${total}</div></div>
       <div class="stat"><div class="stat-label">P1 CRITICAL</div><div class="stat-val p1c">${p1}</div></div>
       <div class="stat"><div class="stat-label">IN PROGRESS</div><div class="stat-val p3c">${inprog}</div></div>
       <div class="stat"><div class="stat-label">RESOLVED</div><div class="stat-val p4c">${resolved}</div></div>
-    </div>
+    </div>`:'<div style="flex:1"></div>'}
     <div class="tabs">
       <button class="tab ${view==='list'?'active':''}" onclick="setView('list')">LIST</button>
       <button class="tab ${view==='kanban'?'active':''}" onclick="setView('kanban')">KANBAN</button>
     </div>
-    <button class="btn-new" onclick="openNew()">+ NEW TICKET</button>
-  </div>`;
-
-  html += `<div class="filters">
+    <button class="btn-settings" onclick="openSettings()" title="Settings">&#9881;</button>
+    <button class="btn-new" onclick="openNew()">+ NEW</button>
+  </div>
+  <div class="filters">
     <span class="filter-label">FILTER:</span>
     <select onchange="filterStatus=this.value;render()">
       <option value="">All statuses</option>
@@ -278,108 +322,90 @@ function render() {
     <button class="arch-toggle" onclick="showArchived=!showArchived;render()">${showArchived?'Hide':'Show'} archived</button>
   </div>`;
 
-  html += view==='list' ? renderList(visible) : renderKanban();
-
-  if (modal==='new'||modal==='edit') html += renderFormModal();
-  if (modal==='detail'&&detailTicket) html += renderDetailModal();
-
-  app.innerHTML = html;
+  html+=view==='list'?renderList(rootVis):renderKanban();
+  if(modal==='new'||modal==='edit') html+=renderFormModal();
+  if(modal==='detail'&&detailTicket) html+=renderDetailModal();
+  if(modal==='settings') html+=renderSettingsModal();
+  app.innerHTML=html;
 }
 
-function renderList(t) {
-  if (!t.length) return `<div class="loading">No tickets found. Click + NEW TICKET to get started.</div>`;
-  return `<div>
-    <div class="list-header"><div>ID</div><div>TITLE</div><div>PRIORITY</div><div>STATUS</div><div>DUE</div><div>EST</div><div>TAGS</div><div></div></div>
-    ${t.map(tk=>`
-    <div class="list-row ${tk.status==='Archived'?'archived-row':''}" onclick="openDetail('${tk._id}')">
-      <div class="ticket-id">${esc(tk.ticketId)}</div>
-      <div class="ticket-title">${esc(tk.title)}</div>
-      <div>${pilPri(tk.priority)}</div>
-      <div>${pilStatus(tk.status)}</div>
-      <div style="font-size:11px;color:var(--text2)">${fmtDate(tk.due)}</div>
-      <div style="font-size:11px;color:var(--text2)">${tk.estimate?tk.estimate+'h':'—'}</div>
-      <div class="ticket-tags">${(tk.tags||[]).slice(0,2).map(g=>`<span class="tag-pill">${g}</span>`).join('')}</div>
-      <div class="row-action" onclick="event.stopPropagation()">
-        <button class="icon-btn" onclick="openEdit('${tk._id}')">✎</button>
+function renderList(rootTickets){
+  if(!rootTickets.length) return `<div class="loading">No tickets found. Click + NEW to get started.</div>`;
+  let rows='';
+  function renderRow(t,depth){
+    const directChildren=getChildren(t.recordId).filter(c=>showArchived||c.status!=='Archived');
+    const hasKids=directChildren.length>0;
+    const isExpanded=expandedIds.has(t.recordId);
+    const pad=depth*18;
+    rows+=`<div class="list-row ${t.status==='Archived'?'archived-row':''} ${depth>0?'child-row':''}" onclick="openDetail('${t._id}')">
+      <div class="ticket-id" style="padding-left:${pad}px">
+        ${hasKids?`<button class="expand-btn" onclick="event.stopPropagation();toggleExpand('${t.recordId}')">${isExpanded?'▾':'▸'}</button>`:'<span style="width:16px;display:inline-block;flex-shrink:0"></span>'}
+        <span class="ticket-id-text">${esc(t.recordId)}</span>
       </div>
-    </div>`).join('')}
-  </div>`;
+      <div class="ticket-title">${esc(t.title)}</div>
+      <div>${pilPri(t.priority)}</div>
+      <div>${pilStatus(t.status)}</div>
+      <div style="font-size:11px;color:var(--text2)">${fmtDate(t.due)}</div>
+      <div style="font-size:11px;color:var(--text2)">${t.estimate?t.estimate+'h':'—'}</div>
+      <div class="ticket-tags">${(t.tags||[]).slice(0,2).map(g=>`<span class="tag-pill">${g}</span>`).join('')}</div>
+      <div class="row-action" onclick="event.stopPropagation()">
+        <button class="icon-btn" onclick="openEdit('${t._id}')">✎</button>
+      </div>
+    </div>`;
+    if(hasKids&&isExpanded) directChildren.forEach(c=>renderRow(c,depth+1));
+  }
+  rootTickets.forEach(t=>renderRow(t,0));
+  return `<div><div class="list-header"><div>ID</div><div>TITLE</div><div>PRIORITY</div><div>STATUS</div><div>DUE</div><div>EST</div><div>TAGS</div><div></div></div>${rows}</div>`;
 }
 
-function renderKanban() {
-  const cols = showArchived ? STATUSES : STATUSES.filter(c=>c!=='Archived');
-  let html = `<div class="kanban" style="grid-template-columns:repeat(${cols.length},minmax(0,1fr))">`;
+function renderKanban(){
+  const cols=showArchived?STATUSES:STATUSES.filter(c=>c!=='Archived');
+  let html=`<div class="kanban" style="grid-template-columns:repeat(${cols.length},minmax(0,1fr))">`;
   cols.forEach(col=>{
-    let ct = tickets.filter(t=>t.status===col);
-    if (filterPriority) ct=ct.filter(t=>t.priority===filterPriority);
-    if (filterTag) ct=ct.filter(t=>t.tags&&t.tags.includes(filterTag));
+    let ct=tickets.filter(t=>t.status===col&&!t.parentRecordId);
+    if(filterPriority)ct=ct.filter(t=>t.priority===filterPriority);
+    if(filterTag)ct=ct.filter(t=>t.tags&&t.tags.includes(filterTag));
     html+=`<div><div class="col-header"><span>${col.toUpperCase()}</span><span class="col-count">${ct.length}</span></div>`;
-    if (!ct.length) html+=`<div class="empty-col">empty</div>`;
-    ct.forEach(t=>{
-      html+=`<div class="k-card" onclick="openDetail('${t._id}')">
-        <div class="k-card-id">${esc(t.ticketId)}</div>
+    if(!ct.length)html+=`<div class="empty-col">empty</div>`;
+    function kCard(t,depth){
+      const ch=getChildren(t.recordId).filter(c=>c.status===col||(showArchived&&c.status==='Archived'));
+      html+=`<div class="k-card ${depth>0?'k-child':''}" onclick="openDetail('${t._id}')">
+        <div class="k-card-id">${esc(t.recordId)}</div>
         <div class="k-card-title">${esc(t.title)}</div>
-        <div class="k-card-meta">
-          ${pilPri(t.priority)}
-          ${t.due?`<span style="font-size:10px;color:var(--text3)">${fmtDate(t.due)}</span>`:''}
-          ${(t.tags||[]).slice(0,1).map(g=>`<span class="tag-pill">${g}</span>`).join('')}
-        </div>
+        <div class="k-card-meta">${pilPri(t.priority)}${t.due?`<span style="font-size:10px;color:var(--text3)">${fmtDate(t.due)}</span>`:''}${(t.tags||[]).slice(0,1).map(g=>`<span class="tag-pill">${g}</span>`).join('')}${ch.length?`<span style="font-size:10px;color:var(--text3)">${ch.length} sub</span>`:''}</div>
       </div>`;
-    });
+      if(depth<2)ch.forEach(c=>kCard(c,depth+1));
+    }
+    ct.forEach(t=>kCard(t,0));
     html+=`</div>`;
   });
   return html+'</div>';
 }
 
-function renderFormModal() {
-  const t = editTicket||{};
-  const isEdit = modal==='edit';
+function renderFormModal(){
+  const t=editTicket||{};
+  const isEdit=modal==='edit';
+  const isChild=!!newChildParent;
+  const parentOptions=tickets.filter(x=>!x.parentRecordId&&(!isEdit||x._id!==t._id));
   return `<div class="overlay" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <div class="modal-title">
-      <span>${isEdit?'EDIT: '+t.ticketId:'NEW TICKET'}</span>
+      <span>${isEdit?'EDIT: '+t.recordId:('NEW TICKET'+(isChild?' — child of '+newChildParent.recordId:''))}</span>
       <button class="icon-btn" onclick="closeModal()">✕</button>
     </div>
-    <div class="field-group">
-      <div class="field-label">TITLE *</div>
-      <input id="f-title" type="text" value="${esc(t.title||'')}" placeholder="Short description">
-    </div>
-    <div class="field-group">
-      <div class="field-label">DESCRIPTION</div>
-      <textarea id="f-desc" placeholder="Details, context, steps...">${esc(t.description||'')}</textarea>
+    <div class="field-group"><div class="field-label">TITLE *</div><input id="f-title" type="text" value="${esc(t.title||'')}" placeholder="Short description"></div>
+    <div class="field-group"><div class="field-label">DESCRIPTION</div><textarea id="f-desc" placeholder="Details, context, steps...">${esc(t.description||'')}</textarea></div>
+    <div class="field-row">
+      <div class="field-group"><div class="field-label">PRIORITY *</div><select id="f-priority">${PRIORITIES.map(p=>`<option value="${p}" ${(t.priority||settings.defaultPriority)===p?'selected':''}>${p} — ${p==='P1'?'Critical':p==='P2'?'High':p==='P3'?'Medium':'Low'}</option>`).join('')}</select></div>
+      <div class="field-group"><div class="field-label">STATUS *</div><select id="f-status">${STATUSES.map(s=>`<option value="${s}" ${(t.status||'Idea')===s?'selected':''}>${s}</option>`).join('')}</select></div>
     </div>
     <div class="field-row">
-      <div class="field-group">
-        <div class="field-label">PRIORITY *</div>
-        <select id="f-priority">
-          ${PRIORITIES.map(p=>`<option value="${p}" ${(t.priority||'P3')===p?'selected':''}>${p} — ${p==='P1'?'Critical':p==='P2'?'High':p==='P3'?'Medium':'Low'}</option>`).join('')}
-        </select>
-      </div>
-      <div class="field-group">
-        <div class="field-label">STATUS *</div>
-        <select id="f-status">
-          ${STATUSES.map(s=>`<option value="${s}" ${(t.status||'Open')===s?'selected':''}>${s}</option>`).join('')}
-        </select>
-      </div>
+      <div class="field-group"><div class="field-label">DUE DATE</div><input id="f-due" type="date" value="${t.due||''}"></div>
+      <div class="field-group"><div class="field-label">ESTIMATE (hours)</div><input id="f-estimate" type="number" min="0" step="0.5" value="${t.estimate||''}" placeholder="e.g. 2"></div>
     </div>
-    <div class="field-row">
-      <div class="field-group">
-        <div class="field-label">DUE DATE</div>
-        <input id="f-due" type="date" value="${t.due||''}">
-      </div>
-      <div class="field-group">
-        <div class="field-label">ESTIMATE (hours)</div>
-        <input id="f-estimate" type="number" min="0" step="0.5" value="${t.estimate||''}" placeholder="e.g. 2">
-      </div>
-    </div>
-    <div class="field-group">
-      <div class="field-label">TAGS (comma-separated)</div>
-      <input id="f-tags" type="text" value="${esc((t.tags||[]).join(', '))}" placeholder="bug, feature, work...">
-    </div>
-    ${isEdit?`<div class="field-group">
-      <div class="field-label">ADD COMMENT</div>
-      <textarea id="f-comment" placeholder="Optional note..."></textarea>
-    </div>`:''}
+    <div class="field-group"><div class="field-label">TAGS (comma-separated)</div><input id="f-tags" type="text" value="${esc((t.tags||[]).join(', '))}" placeholder="bug, feature, work..."></div>
+    ${!isChild&&!isEdit?`<div class="field-group"><div class="field-label">PARENT TICKET (optional)</div><select id="f-parent"><option value="">None (root ticket)</option>${parentOptions.map(p=>`<option value="${p.recordId}" ${(t.parentRecordId||'')=== p.recordId?'selected':''}>${p.recordId} — ${esc(p.title)}</option>`).join('')}</select></div>`:`<input type="hidden" id="f-parent" value="${isChild?newChildParent.recordId:(t.parentRecordId||'')}">` }
+    ${isEdit?`<div class="field-group"><div class="field-label">ADD COMMENT</div><textarea id="f-comment" placeholder="Optional note..."></textarea></div>`:''}
     <div class="btn-row">
       ${isEdit?`<button class="btn-danger" onclick="archiveTicket('${t._id}','${t.status}')">${t.status==='Archived'?'Unarchive':'Archive'}</button>`:''}
       <button class="btn-sec" onclick="closeModal()">Cancel</button>
@@ -388,12 +414,14 @@ function renderFormModal() {
   </div></div>`;
 }
 
-function renderDetailModal() {
-  const t = detailTicket;
+function renderDetailModal(){
+  const t=detailTicket;
+  const children=getChildren(t.recordId);
+  const parent=t.parentRecordId?tickets.find(x=>x.recordId===t.parentRecordId):null;
   return `<div class="overlay" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <div class="modal-title">
-      <span>${t.ticketId}</span>
+      <span>${esc(t.recordId)}</span>
       <div style="display:flex;gap:6px;align-items:center">
         <button class="icon-btn" onclick="openEdit('${t._id}')">✎</button>
         <button class="icon-btn" onclick="closeModal()">✕</button>
@@ -401,7 +429,8 @@ function renderDetailModal() {
     </div>
     <div class="detail-section">
       <div style="font-size:15px;font-weight:500;margin-bottom:8px">${esc(t.title)}</div>
-      ${t.description?`<div style="font-size:12px;color:var(--text2);line-height:1.6">${esc(t.description)}</div>`:''}
+      ${t.description?`<div style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:8px">${esc(t.description)}</div>`:''}
+      ${parent?`<div><span style="font-size:10px;color:var(--text3);margin-right:6px">PARENT</span><span class="parent-badge" onclick="navToTicket('${parent._id}')">${esc(parent.recordId)} — ${esc(parent.title)}</span></div>`:''}
     </div>
     <div class="detail-section">
       <div class="detail-row"><div class="detail-key">Priority</div><div>${pilPri(t.priority)}</div></div>
@@ -409,12 +438,20 @@ function renderDetailModal() {
       <div class="detail-row"><div class="detail-key">Due date</div><div>${fmtDate(t.due)}</div></div>
       <div class="detail-row"><div class="detail-key">Estimate</div><div>${t.estimate?t.estimate+' hrs':'—'}</div></div>
       <div class="detail-row"><div class="detail-key">Tags</div><div style="display:flex;gap:4px;flex-wrap:wrap">${(t.tags||[]).map(g=>`<span class="tag-pill">${g}</span>`).join('')||'—'}</div></div>
+      <div class="detail-row"><div class="detail-key">Record ID</div><div style="font-size:11px">${esc(t.recordId)}</div></div>
       <div class="detail-row"><div class="detail-key">Opened</div><div style="font-size:11px">${fmtTs(t.createdAt)}</div></div>
       ${t.updatedAt?`<div class="detail-row"><div class="detail-key">Updated</div><div style="font-size:11px">${fmtTs(t.updatedAt)}</div></div>`:''}
     </div>
+    ${children.length?`<div class="detail-section">
+      <div class="field-label" style="margin-bottom:8px">CHILDREN (${children.length})</div>
+      ${children.map(c=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:0.5px solid var(--border)">
+        <button class="child-link" onclick="navToTicket('${c._id}')">${esc(c.recordId)} — ${esc(c.title)}</button>
+        ${pilStatus(c.status)}
+      </div>`).join('')}
+    </div>`:''}
     <div>
       <div class="field-label" style="margin-bottom:8px">COMMENTS / NOTES</div>
-      ${(t.comments||[]).length?(t.comments.map(c=>`<div class="comment-item">${esc(c.text)}<div class="comment-ts">${fmtTs(c.ts)}</div></div>`).join('')):`<div style="font-size:11px;color:var(--text3);margin-bottom:8px">No comments yet.</div>`}
+      ${(t.comments||[]).length?t.comments.map(c=>`<div class="comment-item">${esc(c.text)}<div class="comment-ts">${fmtTs(c.ts)}</div></div>`).join(''):`<div style="font-size:11px;color:var(--text3);margin-bottom:8px">No comments yet.</div>`}
       <div style="display:flex;gap:6px;margin-top:8px">
         <input id="inline-comment" type="text" placeholder="Add a comment...">
         <button class="btn-sec" style="white-space:nowrap;width:auto" onclick="addComment('${t._id}')">Add</button>
@@ -422,83 +459,122 @@ function renderDetailModal() {
     </div>
     <div class="btn-row">
       <button class="btn-danger" onclick="archiveTicket('${t._id}','${t.status}')">${t.status==='Archived'?'Unarchive':'Archive'}</button>
+      <button class="btn-child" onclick="openNewChild('${t._id}')">+ Child ticket</button>
       <button class="btn-sec" onclick="closeModal()">Close</button>
     </div>
   </div></div>`;
 }
 
-// --- ACTIONS ---
-function setView(v) { view=v; render(); }
-function closeModal() { modal=null; editTicket=null; detailTicket=null; render(); }
-function openNew() { modal='new'; editTicket=null; render(); }
-function openEdit(id) { editTicket=tickets.find(t=>t._id===id); modal='edit'; detailTicket=null; render(); }
-function openDetail(id) { detailTicket=tickets.find(t=>t._id===id); modal='detail'; render(); }
+function renderSettingsModal(){
+  function seg(key,options){return `<div class="seg">${options.map(o=>`<button class="${settings[key]===o.val?'active':''}" onclick="setSetting('${key}','${o.val}')">${o.label}</button>`).join('')}</div>`;}
+  function tog(key){return `<label class="toggle"><input type="checkbox" ${settings[key]?'checked':''} onchange="setSetting('${key}',this.checked)"><div class="toggle-track"></div><div class="toggle-thumb"></div></label>`;}
+  return `<div class="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal settings-modal">
+    <div class="modal-title"><span>SETTINGS</span><button class="icon-btn" onclick="closeModal()">✕</button></div>
+    <div class="settings-section">
+      <div class="settings-section-title">APPEARANCE</div>
+      <div class="setting-row"><span class="setting-label">Theme</span>${seg('theme',[{val:'night',label:'Night'},{val:'day',label:'Day'}])}</div>
+      <div class="setting-row"><span class="setting-label">Text size</span>${seg('textSize',[{val:'sm',label:'S'},{val:'md',label:'M'},{val:'lg',label:'L'}])}</div>
+      <div class="setting-row"><span class="setting-label">Row density</span>${seg('density',[{val:'compact',label:'Compact'},{val:'comfortable',label:'Comfortable'}])}</div>
+      <div class="setting-row"><span class="setting-label">Show stats bar</span>${tog('showStats')}</div>
+    </div>
+    <div class="settings-section">
+      <div class="settings-section-title">DEFAULTS</div>
+      <div class="setting-row"><span class="setting-label">Default view</span>${seg('defaultView',[{val:'list',label:'List'},{val:'kanban',label:'Kanban'}])}</div>
+      <div class="setting-row"><span class="setting-label">Default priority</span>${seg('defaultPriority',[{val:'P1',label:'P1'},{val:'P2',label:'P2'},{val:'P3',label:'P3'},{val:'P4',label:'P4'}])}</div>
+    </div>
+    <div class="settings-section">
+      <div class="settings-section-title">BEHAVIOUR</div>
+      <div class="setting-row"><span class="setting-label">Confirm before archiving</span>${tog('confirmArchive')}</div>
+    </div>
+    <div class="btn-row" style="border-top:none;padding-top:0;margin-top:0">
+      <button class="btn-sec" onclick="resetSettings()">Reset to defaults</button>
+      <button class="btn-pri" onclick="closeModal()">Done</button>
+    </div>
+  </div></div>`;
+}
 
-function readForm() {
+// ── ACTIONS ───────────────────────────────────────────────
+function setView(v){view=v;render();}
+function closeModal(){modal=null;editTicket=null;detailTicket=null;newChildParent=null;render();}
+function openNew(){modal='new';editTicket=null;newChildParent=null;render();}
+function openEdit(id){editTicket=tickets.find(t=>t._id===id);modal='edit';detailTicket=null;newChildParent=null;render();}
+function openDetail(id){detailTicket=tickets.find(t=>t._id===id);modal='detail';render();}
+function openSettings(){modal='settings';render();}
+function navToTicket(id){detailTicket=tickets.find(t=>t._id===id);modal='detail';render();}
+function toggleExpand(recordId){if(expandedIds.has(recordId))expandedIds.delete(recordId);else expandedIds.add(recordId);render();}
+function openNewChild(parentId){newChildParent=tickets.find(t=>t._id===parentId);modal='new';detailTicket=null;editTicket=null;render();}
+function setSetting(key,val){settings[key]=val;saveSettings();render();}
+function resetSettings(){settings={...defaultSettings};saveSettings();render();}
+
+function readForm(){
+  const parentEl=document.getElementById('f-parent');
   return {
-    title: document.getElementById('f-title').value.trim(),
-    description: document.getElementById('f-desc').value.trim(),
-    priority: document.getElementById('f-priority').value,
-    status: document.getElementById('f-status').value,
-    due: document.getElementById('f-due').value||null,
-    estimate: parseFloat(document.getElementById('f-estimate').value)||null,
-    tags: document.getElementById('f-tags').value.split(',').map(x=>x.trim()).filter(Boolean)
+    title:document.getElementById('f-title').value.trim(),
+    description:document.getElementById('f-desc').value.trim(),
+    priority:document.getElementById('f-priority').value,
+    status:document.getElementById('f-status').value,
+    due:document.getElementById('f-due').value||null,
+    estimate:parseFloat(document.getElementById('f-estimate').value)||null,
+    tags:document.getElementById('f-tags').value.split(',').map(x=>x.trim()).filter(Boolean),
+    parentRecordId:parentEl?parentEl.value||null:null
   };
 }
 
-async function saveNew() {
-  const f = readForm();
-  if (!f.title) { toast('Title is required', true); return; }
-  f.ticketId = newTicketId();
-  try {
-    const created = await apiFetch('/api/tickets', 'POST', f);
+async function saveNew(){
+  const f=readForm();
+  if(!f.title){toast('Title is required',true);return;}
+  if(newChildParent&&!f.parentRecordId) f.parentRecordId=newChildParent.recordId;
+  let recordId=f.parentRecordId?nextChildRecordId(f.parentRecordId):nextRootRecordId();
+  if(tickets.find(t=>t.recordId===recordId)){toast('Record ID conflict, please retry',true);return;}
+  f.recordId=recordId;
+  try{
+    const created=await apiFetch('/api/tickets','POST',f);
     tickets.unshift(created);
+    if(f.parentRecordId)expandedIds.add(f.parentRecordId);
     closeModal();
-    toast('Ticket created');
-  } catch(e) { toast('Error creating ticket', true); }
+    toast('Ticket '+recordId+' created');
+  }catch(e){toast('Error creating ticket',true);}
 }
 
-async function saveEdit(id) {
-  const f = readForm();
-  if (!f.title) { toast('Title is required', true); return; }
-  const commentText = document.getElementById('f-comment')?.value.trim();
-  const existing = tickets.find(t=>t._id===id);
-  const comments = [...(existing.comments||[])];
-  if (commentText) comments.push({text:commentText, ts:Date.now()});
-  const updates = {...f, comments};
-  try {
-    await apiFetch(`/api/tickets/${id}`, 'PATCH', updates);
-    const idx = tickets.findIndex(t=>t._id===id);
-    tickets[idx] = {...existing, ...updates, updatedAt: Date.now()};
-    closeModal();
-    toast('Ticket updated');
-  } catch(e) { toast('Error updating ticket', true); }
+async function saveEdit(id){
+  const f=readForm();
+  if(!f.title){toast('Title is required',true);return;}
+  const commentText=document.getElementById('f-comment')?.value.trim();
+  const existing=tickets.find(t=>t._id===id);
+  const comments=[...(existing.comments||[])];
+  if(commentText)comments.push({text:commentText,ts:Date.now()});
+  const updates={...f,comments};
+  try{
+    await apiFetch(`/api/tickets/${id}`,'PATCH',updates);
+    const idx=tickets.findIndex(t=>t._id===id);
+    tickets[idx]={...existing,...updates,updatedAt:Date.now()};
+    closeModal();toast('Ticket updated');
+  }catch(e){toast('Error updating ticket',true);}
 }
 
-async function addComment(id) {
-  const txt = document.getElementById('inline-comment').value.trim();
-  if (!txt) return;
-  const existing = tickets.find(t=>t._id===id);
-  const comments = [...(existing.comments||[]), {text:txt, ts:Date.now()}];
-  try {
-    await apiFetch(`/api/tickets/${id}`, 'PATCH', {comments});
-    const idx = tickets.findIndex(t=>t._id===id);
-    tickets[idx] = {...existing, comments, updatedAt: Date.now()};
-    detailTicket = tickets[idx];
-    render();
-    toast('Comment added');
-  } catch(e) { toast('Error adding comment', true); }
+async function addComment(id){
+  const txt=document.getElementById('inline-comment').value.trim();
+  if(!txt)return;
+  const existing=tickets.find(t=>t._id===id);
+  const comments=[...(existing.comments||[]),{text:txt,ts:Date.now()}];
+  try{
+    await apiFetch(`/api/tickets/${id}`,'PATCH',{comments});
+    const idx=tickets.findIndex(t=>t._id===id);
+    tickets[idx]={...existing,comments,updatedAt:Date.now()};
+    detailTicket=tickets[idx];render();toast('Comment added');
+  }catch(e){toast('Error adding comment',true);}
 }
 
-async function archiveTicket(id, currentStatus) {
-  const newStatus = currentStatus==='Archived' ? 'Open' : 'Archived';
-  try {
-    await apiFetch(`/api/tickets/${id}`, 'PATCH', {status: newStatus});
-    const idx = tickets.findIndex(t=>t._id===id);
-    tickets[idx] = {...tickets[idx], status: newStatus, updatedAt: Date.now()};
-    closeModal();
-    toast(newStatus==='Archived' ? 'Ticket archived' : 'Ticket restored');
-  } catch(e) { toast('Error updating ticket', true); }
+async function archiveTicket(id,currentStatus){
+  const newStatus=currentStatus==='Archived'?'Idea':'Archived';
+  if(settings.confirmArchive&&newStatus==='Archived'){if(!confirm('Archive this ticket?'))return;}
+  try{
+    await apiFetch(`/api/tickets/${id}`,'PATCH',{status:newStatus});
+    const idx=tickets.findIndex(t=>t._id===id);
+    tickets[idx]={...tickets[idx],status:newStatus,updatedAt:Date.now()};
+    closeModal();toast(newStatus==='Archived'?'Ticket archived':'Ticket restored');
+  }catch(e){toast('Error updating ticket',true);}
 }
 </script>
 </body>
