@@ -591,6 +591,7 @@ function logout(){sessionStorage.removeItem('stickey_secret');apiSecret='';ticke
 
 function readForm(){
   const parentEl=document.getElementById('f-parent');
+  const recordIdEl=document.getElementById('f-recordid');
   return{
     title:document.getElementById('f-title').value.trim(),
     description:document.getElementById('f-desc').value.trim(),
@@ -599,7 +600,8 @@ function readForm(){
     due:document.getElementById('f-due').value||null,
     estimate:parseFloat(document.getElementById('f-estimate').value)||null,
     tags:document.getElementById('f-tags').value.split(',').map(x=>x.trim()).filter(Boolean),
-    parentRecordId:parentEl?parentEl.value||null:null
+    parentRecordId:parentEl?parentEl.value||null:null,
+    newRecordId:recordIdEl?recordIdEl.value.trim():null
   };
 }
 
@@ -634,15 +636,33 @@ async function saveEdit(id){
   const commentText=document.getElementById('f-comment')?.value.trim();
   const existing=tickets.find(t=>t._id===id);
   const comments=[...(existing.comments||[])];
-  // auto-comment if status changed
   if(f.status!==existing.status){
     comments.push(sysComment(`Status changed: ${existing.status} → ${f.status}`));
   }
   if(commentText)comments.push({text:commentText,ts:Date.now()});
   const updates={...f,comments};
-  // stamp resolvedAt if transitioning to Resolved
   if(f.status==='Resolved'&&existing.status!=='Resolved')updates.resolvedAt=Date.now();
   if(f.status!=='Resolved'&&existing.status==='Resolved')updates.resolvedAt=null;
+  // handle renumbering
+  const newId=f.newRecordId;
+  const oldId=existing.recordId;
+  if(newId&&newId!==oldId){
+    if(tickets.find(t=>t.recordId===newId&&t._id!==id)){toast('Record ID already in use',true);return;}
+    updates.recordId=newId;
+    // cascade to all descendants
+    const descendants=tickets.filter(t=>t.recordId!==oldId&&t.recordId.startsWith(oldId));
+    for(const d of descendants){
+      const newDescId=newId+d.recordId.slice(oldId.length);
+      const newParentId=d.parentRecordId===oldId?newId:newId+d.parentRecordId.slice(oldId.length);
+      try{
+        await apiFetch(`/api/tickets/${d._id}`,'PATCH',{recordId:newDescId,parentRecordId:newParentId});
+        const di=tickets.findIndex(t=>t._id===d._id);
+        tickets[di]={...tickets[di],recordId:newDescId,parentRecordId:newParentId};
+      }catch(e){}
+    }
+    comments.push(sysComment(`Record ID changed: ${oldId} → ${newId}`));
+    updates.comments=comments;
+  }
   try{
     await apiFetch(`/api/tickets/${id}`,'PATCH',updates);
     const idx=tickets.findIndex(t=>t._id===id);
