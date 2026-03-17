@@ -44,6 +44,8 @@ body.density-comfortable{--row-padding:12px}
 .btn-new:hover{background:rgba(55,138,221,0.1)}
 .btn-settings{padding:5px 10px;border:0.5px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:14px;font-family:var(--font);background:transparent;color:var(--text2)}
 .btn-settings:hover{background:var(--bg3);color:var(--text)}
+.btn-logout{padding:5px 10px;border:0.5px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:14px;font-family:var(--font);background:transparent;color:var(--text3)}
+.btn-logout:hover{background:var(--bg3);color:var(--p1);border-color:var(--p1)}
 
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
 .stat{background:var(--bg2);border-radius:var(--radius);padding:10px 12px;border:0.5px solid var(--border)}
@@ -329,6 +331,7 @@ function render(){
       <button class="tab ${view==='kanban'?'active':''}" onclick="setView('kanban')">KANBAN</button>
     </div>
     <button class="btn-settings" onclick="openSettings()" title="Settings">&#9881;</button>
+    <button class="btn-logout" onclick="logout()" title="Log out">&#8594;</button>
     <button class="btn-new" onclick="openNew()">+ NEW</button>
   </div>
   <div class="filters">
@@ -581,6 +584,7 @@ function toggleExpand(recordId){if(expandedIds.has(recordId))expandedIds.delete(
 function openNewChild(parentId){newChildParent=tickets.find(t=>t._id===parentId);modal='new';detailTicket=null;editTicket=null;render();}
 function setSetting(key,val){settings[key]=val;saveSettings();render();}
 function resetSettings(){settings={...defaultSettings};saveSettings();render();}
+function logout(){sessionStorage.removeItem('stickey_secret');apiSecret='';tickets=[];modal=null;document.getElementById('app').style.display='none';document.getElementById('auth-screen').style.display='flex';document.getElementById('pw-input').value='';document.getElementById('auth-error').textContent='';}
 
 function readForm(){
   const parentEl=document.getElementById('f-parent');
