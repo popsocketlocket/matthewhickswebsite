@@ -3,612 +3,503 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Matthew Hicks — Sales Engineering & IT Solutions</title>
+<title>TICKR</title>
 <style>
-  :root {
-    --ink: #0f0e0c;
-    --paper: #f5f2ec;
-    --accent: #c84b2f;
-    --muted: #7a7469;
-    --rule: #d6d1c7;
-  }
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f0f0f;--bg2:#1a1a1a;--bg3:#242424;--bg4:#2e2e2e;
+  --border:#333;--border2:#444;
+  --text:#e8e8e8;--text2:#999;--text3:#666;
+  --p1:#e24b4a;--p2:#ef9f27;--p3:#378add;--p4:#639922;
+  --accent:#378add;--radius:6px;--font:'Courier New',monospace
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:13px;min-height:100vh}
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* AUTH SCREEN */
+#auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh}
+.auth-box{background:var(--bg2);border:0.5px solid var(--border);border-radius:10px;padding:40px;width:320px;text-align:center}
+.auth-logo{font-size:22px;font-weight:500;margin-bottom:8px;letter-spacing:-0.5px}
+.auth-logo span{color:var(--p3)}
+.auth-box p{color:var(--text2);font-size:12px;margin-bottom:24px}
+.auth-box input{width:100%;padding:10px 12px;background:var(--bg3);border:0.5px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--font);font-size:13px;margin-bottom:10px;text-align:center;letter-spacing:2px}
+.auth-box input:focus{outline:none;border-color:var(--accent)}
+.auth-box button{width:100%;padding:10px;background:transparent;border:0.5px solid var(--accent);border-radius:var(--radius);color:var(--accent);font-family:var(--font);font-size:13px;cursor:pointer}
+.auth-box button:hover{background:rgba(55,138,221,0.1)}
+.auth-error{color:var(--p1);font-size:11px;margin-top:8px;min-height:16px}
 
-  body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: Georgia, 'Times New Roman', serif;
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
+/* MAIN APP */
+#app{display:none;padding:16px;max-width:1200px;margin:0 auto}
+.topbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.logo{font-size:15px;font-weight:500;letter-spacing:-0.5px;padding-right:12px;border-right:0.5px solid var(--border)}
+.logo span{color:var(--p3)}
+.tabs{display:flex;gap:4px;margin-left:auto}
+.tab{padding:5px 14px;border:0.5px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:12px;font-family:var(--font);background:transparent;color:var(--text2)}
+.tab.active{background:var(--bg3);color:var(--text);border-color:var(--border2)}
+.btn-new{padding:5px 14px;border:0.5px solid var(--p3);border-radius:var(--radius);cursor:pointer;font-size:12px;font-family:var(--font);background:transparent;color:var(--p3)}
+.btn-new:hover{background:rgba(55,138,221,0.1)}
 
-  /* ── NAV ── */
-  nav {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 1.4rem 5rem;
-    border-bottom: 1px solid var(--rule);
-  }
-  .nav-name {
-    font-family: 'Courier New', monospace;
-    font-size: 0.78rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .nav-location {
-    font-family: 'Courier New', monospace;
-    font-size: 0.75rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.stat{background:var(--bg2);border-radius:var(--radius);padding:10px 12px;border:0.5px solid var(--border)}
+.stat-label{font-size:10px;color:var(--text3);margin-bottom:3px;letter-spacing:0.4px}
+.stat-val{font-size:20px;font-weight:500}
+.p1c{color:var(--p1)}.p2c{color:var(--p2)}.p3c{color:var(--p3)}.p4c{color:var(--p4)}
 
-  /* ── HERO ── */
-  .hero {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    min-height: 90vh;
-  }
+/* PILLS */
+.pill{display:inline-flex;align-items:center;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:500;letter-spacing:0.3px}
+.pill-p1{background:#501313;color:#f09595}.pill-p2{background:#412402;color:#fac775}
+.pill-p3{background:#042c53;color:#85b7eb}.pill-p4{background:#173404;color:#97c459}
+.pill-open{background:var(--bg3);color:var(--text2);border:0.5px solid var(--border)}
+.pill-progress{background:#412402;color:#fac775}
+.pill-resolved{background:#173404;color:#97c459}
+.pill-archived{background:#1a1a1a;color:#666}
+.tag-pill{background:var(--bg3);border:0.5px solid var(--border);color:var(--text2);padding:2px 6px;border-radius:3px;font-size:10px}
 
-  /* Left: photo + name */
-  .hero-left {
-    display: flex; flex-direction: column;
-    border-right: 1px solid var(--rule);
-  }
-  .headshot-area {
-    flex: 1;
-    background: var(--rule);
-    display: flex; align-items: center; justify-content: center;
-    min-height: 340px;
-    position: relative;
-    overflow: hidden;
-  }
-  .headshot-area img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  .headshot-placeholder {
-    display: flex; flex-direction: column; align-items: center; gap: 0.75rem;
-    color: var(--muted);
-  }
-  .headshot-placeholder svg {
-    width: 56px; height: 56px;
-    opacity: 0.35;
-  }
-  .headshot-placeholder span {
-    font-family: 'Courier New', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    opacity: 0.5;
-  }
-  .hero-nameplate {
-    padding: 2.5rem 3.5rem;
-    border-top: 1px solid var(--rule);
-  }
-  .hero-tag {
-    font-family: 'Courier New', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 0.9rem;
-  }
-  .hero-name {
-    font-size: clamp(2.4rem, 4vw, 3.8rem);
-    line-height: 1.05;
-    letter-spacing: -0.02em;
-  }
-  .hero-name em { font-style: italic; color: var(--accent); }
+/* FILTERS */
+.filters{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+.filters select{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--font);font-size:11px;padding:4px 8px;cursor:pointer}
+.filter-label{font-size:11px;color:var(--text3)}
+.arch-toggle{font-size:11px;color:var(--p3);cursor:pointer;background:none;border:none;font-family:var(--font);padding:0}
 
-  /* Right: bio + contact */
-  .hero-right {
-    display: flex; flex-direction: column; justify-content: center;
-    padding: 5rem 5rem 5rem 4.5rem;
-    gap: 2.5rem;
-  }
-  .hero-bio p {
-    font-size: 0.98rem;
-    color: var(--muted);
-    line-height: 1.85;
-    margin-bottom: 1rem;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-weight: 300;
-  }
-  .hero-bio p strong { color: var(--ink); font-weight: 600; }
-  .hero-bio p:last-child { margin-bottom: 0; }
+/* LIST VIEW */
+.list-header{display:grid;grid-template-columns:75px 1fr 65px 90px 80px 60px 80px 36px;gap:6px;padding:6px 10px;border-bottom:0.5px solid var(--border);font-size:10px;color:var(--text3);letter-spacing:0.4px}
+.list-row{display:grid;grid-template-columns:75px 1fr 65px 90px 80px 60px 80px 36px;gap:6px;padding:8px 10px;border-bottom:0.5px solid var(--border);align-items:center;cursor:pointer}
+.list-row:hover{background:var(--bg2)}
+.list-row.archived-row{opacity:0.45}
+.ticket-id{font-size:10px;color:var(--text3)}
+.ticket-title{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ticket-tags{display:flex;gap:3px;flex-wrap:wrap}
+.row-action{display:flex;gap:4px;justify-content:flex-end}
+.icon-btn{width:24px;height:24px;border:none;background:transparent;cursor:pointer;color:var(--text3);font-size:14px;display:flex;align-items:center;justify-content:center;border-radius:4px}
+.icon-btn:hover{background:var(--bg3);color:var(--text)}
 
-  .hero-divider {
-    width: 3rem; height: 1px;
-    background: var(--rule);
-  }
+/* KANBAN */
+.kanban{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-items:start}
+.col-header{font-size:11px;font-weight:500;letter-spacing:0.5px;padding:0 0 8px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--border);margin-bottom:8px}
+.col-count{background:var(--bg3);border-radius:10px;padding:1px 7px;font-size:10px}
+.k-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:10px;margin-bottom:8px;cursor:pointer}
+.k-card:hover{border-color:var(--border2)}
+.k-card-id{font-size:10px;color:var(--text3);margin-bottom:4px}
+.k-card-title{font-size:13px;margin-bottom:8px;line-height:1.4}
+.k-card-meta{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
 
-  .hero-contact {
-    font-family: 'Courier New', monospace;
-    font-size: 0.75rem;
-    color: var(--muted);
-    display: flex; flex-direction: column; gap: 0.5rem;
-    line-height: 1.5;
-  }
+/* MODAL OVERLAY */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;z-index:100;overflow-y:auto}
+.modal{background:var(--bg2);border:0.5px solid var(--border2);border-radius:10px;width:100%;max-width:560px;padding:22px}
+.modal-title{font-size:14px;font-weight:500;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;color:var(--text)}
+.field-group{margin-bottom:12px}
+.field-label{font-size:10px;color:var(--text3);margin-bottom:4px;letter-spacing:0.4px}
+input,select,textarea{width:100%;background:var(--bg3);border:0.5px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:var(--font);font-size:12px;padding:8px 10px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+textarea{resize:vertical;min-height:70px}
+select option{background:var(--bg3)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn-row{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;border-top:0.5px solid var(--border);padding-top:12px}
+.btn-pri{padding:6px 18px;border:0.5px solid var(--p3);border-radius:var(--radius);cursor:pointer;font-size:12px;font-family:var(--font);background:rgba(55,138,221,0.1);color:var(--p3)}
+.btn-sec{padding:6px 14px;border:0.5px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:12px;font-family:var(--font);background:transparent;color:var(--text2)}
+.btn-danger{padding:6px 14px;border:0.5px solid var(--p1);border-radius:var(--radius);cursor:pointer;font-size:12px;font-family:var(--font);background:transparent;color:var(--p1)}
+.detail-section{margin-bottom:14px;padding-bottom:14px;border-bottom:0.5px solid var(--border)}
+.detail-row{display:grid;grid-template-columns:110px 1fr;gap:8px;margin-bottom:6px;font-size:12px}
+.detail-key{color:var(--text3)}
+.comment-item{background:var(--bg3);border-radius:var(--radius);padding:8px 10px;margin-bottom:6px;font-size:12px;line-height:1.5;border:0.5px solid var(--border)}
+.comment-ts{font-size:10px;color:var(--text3);margin-top:4px}
+.empty-col{font-size:11px;color:var(--text3);padding:12px 0;text-align:center}
 
-  .certs-inline {
-    padding-top: 1rem;
-    border-top: 1px solid var(--rule);
-  }
-  .certs-label {
-    font-family: 'Courier New', monospace;
-    font-size: 0.66rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 0.9rem;
-  }
-  .cert-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
-  .cert-list li {
-    font-size: 0.84rem;
-    padding-left: 1.2rem;
-    position: relative;
-    line-height: 1.4;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    color: var(--ink);
-  }
-  .cert-list li::before {
-    content: '→';
-    position: absolute; left: 0;
-    color: var(--accent);
-    font-family: 'Courier New', monospace;
-    font-size: 0.7rem;
-    top: 0.15rem;
-  }
-
-  /* ── SECTIONS ── */
-  section { padding: 5.5rem 5rem; border-top: 1px solid var(--rule); }
-
-  .section-label {
-    font-family: 'Courier New', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 1rem;
-    display: flex; align-items: center; gap: 1rem;
-  }
-  .section-label::after {
-    content: '';
-    display: block;
-    height: 1px; width: 3rem;
-    background: var(--accent);
-  }
-  .section-title {
-    font-size: clamp(1.9rem, 3.5vw, 2.8rem);
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    margin-bottom: 3rem;
-  }
-
-  /* ── VALUE ── */
-  .value-section { background: var(--ink); color: var(--paper); border-top: none; }
-  .value-section .section-label { color: var(--accent); }
-  .value-section .section-label::after { background: var(--accent); }
-  .value-section .section-title { color: var(--paper); }
-  .value-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    border: 1px solid rgba(255,255,255,0.1);
-    margin-top: 3rem;
-  }
-  .value-card {
-    padding: 2.5rem;
-    border-right: 1px solid rgba(255,255,255,0.1);
-  }
-  .value-card:last-child { border-right: none; }
-  .value-num {
-    font-size: 3rem;
-    color: var(--accent);
-    line-height: 1;
-    margin-bottom: 1.2rem;
-    font-style: italic;
-  }
-  .value-title {
-    font-size: 0.95rem;
-    font-weight: 600;
-    margin-bottom: 0.8rem;
-    color: var(--paper);
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  }
-  .value-body {
-    font-size: 0.86rem;
-    color: rgba(245,242,236,0.5);
-    line-height: 1.75;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-weight: 300;
-  }
-
-  /* ── EXPERIENCE ── */
-  .exp-list { display: flex; flex-direction: column; }
-  .exp-item {
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    border-top: 1px solid var(--rule);
-    padding: 2.5rem 0;
-  }
-  .exp-item:last-child { border-bottom: 1px solid var(--rule); }
-  .exp-meta { padding-right: 3rem; padding-top: 0.2rem; }
-  .exp-company {
-    font-family: 'Courier New', monospace;
-    font-size: 0.72rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 0.35rem;
-  }
-  .exp-period {
-    font-family: 'Courier New', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-  }
-  .exp-title {
-    font-size: 1.4rem;
-    margin-bottom: 0.9rem;
-    letter-spacing: -0.01em;
-  }
-  .exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
-  .exp-bullets li {
-    font-size: 0.88rem;
-    color: var(--muted);
-    padding-left: 1.2rem;
-    position: relative;
-    line-height: 1.55;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-weight: 300;
-  }
-  .exp-bullets li::before {
-    content: '—';
-    position: absolute; left: 0;
-    color: var(--rule);
-  }
-
-  /* ── SKILLS ── */
-  .skills-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    border: 1px solid var(--rule);
-  }
-  .skill-group {
-    padding: 2.2rem;
-    border-right: 1px solid var(--rule);
-    border-bottom: 1px solid var(--rule);
-  }
-  .skill-group:nth-child(3n) { border-right: none; }
-  .skill-group:nth-last-child(-n+3) { border-bottom: none; }
-  .skill-group-title {
-    font-family: 'Courier New', monospace;
-    font-size: 0.66rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 1.1rem;
-  }
-  .skill-tags { display: flex; flex-wrap: wrap; gap: 0.45rem; }
-  .skill-tag {
-    font-size: 0.76rem;
-    padding: 0.28rem 0.65rem;
-    border: 1px solid var(--rule);
-    color: var(--ink);
-    font-family: 'Courier New', monospace;
-  }
-
-  /* ── CONTACT ── */
-  .contact-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 5rem;
-    align-items: start;
-  }
-  .contact-copy p {
-    font-size: 0.96rem;
-    color: var(--muted);
-    line-height: 1.8;
-    margin-bottom: 1rem;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-weight: 300;
-  }
-  .contact-items { display: flex; flex-direction: column; }
-  .contact-item {
-    padding: 1.3rem 1.5rem;
-    border: 1px solid var(--rule);
-    border-bottom: none;
-    display: flex; flex-direction: column; gap: 0.25rem;
-  }
-  .contact-item:last-child { border-bottom: 1px solid var(--rule); }
-  .contact-item-label {
-    font-family: 'Courier New', monospace;
-    font-size: 0.66rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .contact-item-value {
-    font-family: 'Courier New', monospace;
-    font-size: 0.82rem;
-    color: var(--ink);
-  }
-
-  /* ── FOOTER ── */
-  footer {
-    border-top: 1px solid var(--rule);
-    padding: 1.8rem 5rem;
-    display: flex; justify-content: space-between; align-items: center;
-  }
-  footer p {
-    font-family: 'Courier New', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-  }
-
-  /* ── RESPONSIVE ── */
-  @media (max-width: 860px) {
-    nav { padding: 1rem 1.5rem; }
-    .hero { grid-template-columns: 1fr; min-height: auto; }
-    .hero-left { border-right: none; border-bottom: 1px solid var(--rule); }
-    .headshot-area { min-height: 280px; }
-    .hero-nameplate { padding: 2rem 1.5rem; }
-    .hero-right { padding: 3rem 1.5rem; }
-    section { padding: 3.5rem 1.5rem; }
-    .exp-item { grid-template-columns: 1fr; }
-    .exp-meta { padding-right: 0; padding-bottom: 0.5rem; }
-    .skills-grid { grid-template-columns: 1fr 1fr; }
-    .skill-group:nth-child(3n) { border-right: 1px solid var(--rule); }
-    .skill-group:nth-child(2n) { border-right: none; }
-    .skill-group:nth-last-child(-n+3) { border-bottom: 1px solid var(--rule); }
-    .skill-group:nth-last-child(-n+2) { border-bottom: none; }
-    .value-grid { grid-template-columns: 1fr; }
-    .value-card { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
-    .value-card:last-child { border-bottom: none; }
-    .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }
-    footer { padding: 1.8rem 1.5rem; flex-direction: column; gap: 0.4rem; text-align: center; }
-  }
+/* LOADING / TOAST */
+.loading{text-align:center;padding:60px;color:var(--text3);font-size:12px}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--bg3);border:0.5px solid var(--border2);border-radius:var(--radius);padding:10px 16px;font-size:12px;z-index:200;opacity:0;transition:opacity 0.2s}
+.toast.show{opacity:1}
+.toast.error{border-color:var(--p1);color:var(--p1)}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <span class="nav-name">Matthew Hicks</span>
-  <span class="nav-location">Omaha, NE</span>
-</nav>
-
-<!-- HERO: merged intro + about -->
-<div class="hero">
-  <div class="hero-left">
-    <div class="headshot-area">
-      <!-- Replace the div below with: <img src="your-photo.jpg" alt="Matthew Hicks"> -->
-      <div class="headshot-placeholder">
-        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="32" cy="24" r="12" stroke="currentColor" stroke-width="2"/>
-          <path d="M8 56c0-13.255 10.745-24 24-24s24 10.745 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        <span>Add headshot</span>
-      </div>
-    </div>
-    <div class="hero-nameplate">
-      <p class="hero-tag">Sales Engineering &amp; Technical Solutions</p>
-      <h1 class="hero-name">Matthew<br><em>Hicks</em></h1>
-    </div>
-  </div>
-
-  <div class="hero-right">
-    <div class="hero-bio">
-      <p>I'm an IT professional with a strong foundation in hands-on technical support and print management systems. I've spent the last few years in the field — installing, configuring, and troubleshooting enterprise equipment — while building real relationships with clients and their IT teams.</p>
-      <p>What sets me apart is <strong>how I communicate.</strong> I translate technical jargon into plain language and help clients feel confident in their technology decisions. I'm pursuing a B.S. in Information Technology at Bellevue University and actively targeting roles in <strong>sales engineering, technical account management, or pre-sales support.</strong></p>
-    </div>
-
-    <div class="hero-divider"></div>
-
-    <div class="hero-contact">
-      <span>(951) 454-4590</span>
-      <span>mahicks612@gmail.com</span>
-      <span>linkedin.com/in/matthew-hicks-114521237</span>
-    </div>
-
-    <div class="certs-inline">
-      <p class="certs-label">Certifications &amp; Achievements</p>
-      <ul class="cert-list">
-        <li>MyQ X Certified</li>
-        <li>MyQ Roger Certified</li>
-        <li>PaperCut MF Certified — Tech Foundation</li>
-        <li>PaperCut MF Certified — High Availability</li>
-        <li>Eagle Scout, Class of 2019</li>
-      </ul>
-    </div>
+<!-- AUTH -->
+<div id="auth-screen">
+  <div class="auth-box">
+    <div class="auth-logo"><span>[</span>TICKR<span>]</span></div>
+    <p>Personal IT ticket tracker</p>
+    <input type="password" id="pw-input" placeholder="enter password" onkeydown="if(event.key==='Enter')tryAuth()">
+    <button onclick="tryAuth()">SIGN IN</button>
+    <div class="auth-error" id="auth-error"></div>
   </div>
 </div>
 
-<!-- VALUE PROP -->
-<section class="value-section">
-  <p class="section-label">Why Sales Engineering</p>
-  <h2 class="section-title" style="max-width:480px;">What I bring to a<br>sales-led team.</h2>
-  <div class="value-grid">
-    <div class="value-card">
-      <div class="value-num">01</div>
-      <div class="value-title">Real-World Technical Credibility</div>
-      <div class="value-body">I've installed and managed enterprise print and IT systems firsthand. When I demo a product, clients know I'm not reading from a script — I've lived the workflow.</div>
-    </div>
-    <div class="value-card">
-      <div class="value-num">02</div>
-      <div class="value-title">Client-Facing Communication</div>
-      <div class="value-body">1,200+ help desk calls taught me how to listen, diagnose, and explain clearly under pressure. I translate technical complexity into confident, digestible answers.</div>
-    </div>
-    <div class="value-card">
-      <div class="value-num">03</div>
-      <div class="value-title">Collaborative by Nature</div>
-      <div class="value-body">Whether coaching youth basketball or working alongside client IT teams, I thrive in a supporting role — helping others succeed rather than chasing individual credit.</div>
-    </div>
-  </div>
-</section>
+<!-- MAIN APP -->
+<div id="app"></div>
+<div class="toast" id="toast"></div>
 
-<!-- EXPERIENCE -->
-<section id="experience">
-  <p class="section-label">Experience</p>
-  <h2 class="section-title">Where I've been.</h2>
-  <div class="exp-list">
+<script>
+const STATUSES = ['Open','In Progress','Resolved','Archived'];
+const PRIORITIES = ['P1','P2','P3','P4'];
+const DEFAULT_TAGS = ['bug','feature','chore','personal','work','health','finance','learning'];
 
-    <div class="exp-item">
-      <div class="exp-meta">
-        <div class="exp-company">All Makes Office Equipment</div>
-        <div class="exp-period">Aug 2025 — Present</div>
-      </div>
-      <div class="exp-content">
-        <div class="exp-title">Application Administrator — MyQ</div>
-        <ul class="exp-bullets">
-          <li>Install, modify, and maintain MyQ centralized print management server software</li>
-          <li>Manage all printers, copiers, print queues, and users in-house</li>
-          <li>Work directly with client IT departments on their own MyQ deployments</li>
-        </ul>
-      </div>
-    </div>
+let apiSecret = sessionStorage.getItem('tickr_secret') || '';
+let tickets = [];
+let view = 'list';
+let filterStatus = '';
+let filterPriority = '';
+let filterTag = '';
+let showArchived = false;
+let modal = null;
+let editTicket = null;
+let detailTicket = null;
+let nextId = 1;
 
-    <div class="exp-item">
-      <div class="exp-meta">
-        <div class="exp-company">All Makes Office Equipment</div>
-        <div class="exp-period">Sept 2024 — Aug 2025</div>
-      </div>
-      <div class="exp-content">
-        <div class="exp-title">IT Support Specialist</div>
-        <ul class="exp-bullets">
-          <li>Installed and supported a full fleet of Kyocera, Epson, and Clickshare office equipment</li>
-          <li>Managed KFS, ERS, and SMTP2GO to organize groups, push firmware, and update scan settings</li>
-          <li>Provided remote support via viewing software; configured MDF/IDF network setups</li>
-        </ul>
-      </div>
-    </div>
+// --- AUTH ---
+async function tryAuth() {
+  const pw = document.getElementById('pw-input').value.trim();
+  if (!pw) return;
+  const res = await fetch('/api/tickets', { headers: { 'x-api-secret': pw } });
+  if (res.status === 401) {
+    document.getElementById('auth-error').textContent = 'incorrect password';
+    return;
+  }
+  apiSecret = pw;
+  sessionStorage.setItem('tickr_secret', pw);
+  const data = await res.json();
+  tickets = data;
+  computeNextId();
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  render();
+}
 
-    <div class="exp-item">
-      <div class="exp-meta">
-        <div class="exp-company">Creighton University — IT</div>
-        <div class="exp-period">Oct 2022 — Sept 2024</div>
-      </div>
-      <div class="exp-content">
-        <div class="exp-title">Tier 1 Help Desk Technician</div>
-        <ul class="exp-bullets">
-          <li>Resolved IT issues across 4 campuses including the dental clinic</li>
-          <li>Handled approximately 1,200 inbound calls and 300 walk-up support requests</li>
-          <li>Communicated escalations clearly and efficiently to Tier 2 and 3 teams</li>
-        </ul>
-      </div>
-    </div>
+// Auto-login if secret is already in sessionStorage
+if (apiSecret) {
+  fetch('/api/tickets', { headers: { 'x-api-secret': apiSecret } })
+    .then(r => r.ok ? r.json() : null)
+    .then(data => {
+      if (data) {
+        tickets = data;
+        computeNextId();
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+        render();
+      } else {
+        sessionStorage.removeItem('tickr_secret');
+        apiSecret = '';
+      }
+    });
+}
 
-    <div class="exp-item">
-      <div class="exp-meta">
-        <div class="exp-company">Creighton University</div>
-        <div class="exp-period">May 2023 — Aug 2023</div>
-      </div>
-      <div class="exp-content">
-        <div class="exp-title">Call Router</div>
-        <ul class="exp-bullets">
-          <li>Received and routed calls from the main University phone line</li>
-        </ul>
-      </div>
-    </div>
+function computeNextId() {
+  const nums = tickets.map(t => parseInt((t.ticketId||'TKT-0000').split('-')[1]||0));
+  nextId = nums.length ? Math.max(...nums) + 1 : 1;
+}
 
-  </div>
-</section>
+function newTicketId() {
+  return `TKT-${String(nextId++).padStart(4,'0')}`;
+}
 
-<!-- SKILLS -->
-<section id="skills">
-  <p class="section-label">Skills</p>
-  <h2 class="section-title">What I work with.</h2>
-  <div class="skills-grid">
-    <div class="skill-group">
-      <div class="skill-group-title">Print Management</div>
-      <div class="skill-tags">
-        <span class="skill-tag">MyQ X</span>
-        <span class="skill-tag">PaperCut MF</span>
-        <span class="skill-tag">KFS</span>
-        <span class="skill-tag">ERS</span>
-      </div>
-    </div>
-    <div class="skill-group">
-      <div class="skill-group-title">Hardware &amp; Devices</div>
-      <div class="skill-tags">
-        <span class="skill-tag">Kyocera</span>
-        <span class="skill-tag">Epson</span>
-        <span class="skill-tag">Clickshare</span>
-        <span class="skill-tag">MDF/IDF Networking</span>
-      </div>
-    </div>
-    <div class="skill-group">
-      <div class="skill-group-title">IT Support</div>
-      <div class="skill-tags">
-        <span class="skill-tag">Help Desk</span>
-        <span class="skill-tag">Remote Support</span>
-        <span class="skill-tag">Ticketing Systems</span>
-        <span class="skill-tag">Escalation Mgmt</span>
-      </div>
-    </div>
-    <div class="skill-group">
-      <div class="skill-group-title">Software &amp; Tools</div>
-      <div class="skill-tags">
-        <span class="skill-tag">SMTP2GO</span>
-        <span class="skill-tag">Remote Viewing</span>
-        <span class="skill-tag">Firmware Management</span>
-      </div>
-    </div>
-    <div class="skill-group">
-      <div class="skill-group-title">Client-Facing</div>
-      <div class="skill-tags">
-        <span class="skill-tag">Technical Communication</span>
-        <span class="skill-tag">Client IT Liaison</span>
-        <span class="skill-tag">Demos &amp; Training</span>
-      </div>
-    </div>
-    <div class="skill-group">
-      <div class="skill-group-title">Education</div>
-      <div class="skill-tags">
-        <span class="skill-tag">B.S. IT — Bellevue</span>
-        <span class="skill-tag">CS — Creighton</span>
-      </div>
-    </div>
-  </div>
-</section>
+// --- API CALLS ---
+async function apiFetch(path, method='GET', body=null) {
+  const opts = { method, headers: { 'x-api-secret': apiSecret, 'Content-Type': 'application/json' } };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(path, opts);
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
 
-<!-- CONTACT -->
-<section id="contact">
-  <p class="section-label">Contact</p>
-  <div class="contact-grid">
-    <div class="contact-copy">
-      <h2 class="section-title">Let's talk<br><em>opportunities.</em></h2>
-      <p>I'm actively looking for sales engineering, technical account management, or pre-sales roles where I can apply my hands-on IT background to support a sales team.</p>
-      <p>If you're building a team that needs someone who can talk tech with clients and make complex solutions feel approachable, reach out.</p>
-    </div>
-    <div class="contact-items">
-      <div class="contact-item">
-        <div class="contact-item-label">Email</div>
-        <div class="contact-item-value">mahicks612@gmail.com</div>
-      </div>
-      <div class="contact-item">
-        <div class="contact-item-label">Phone</div>
-        <div class="contact-item-value">(951) 454-4590</div>
-      </div>
-      <div class="contact-item">
-        <div class="contact-item-label">LinkedIn</div>
-        <div class="contact-item-value">linkedin.com/in/matthew-hicks-114521237</div>
-      </div>
-      <div class="contact-item">
-        <div class="contact-item-label">Location</div>
-        <div class="contact-item-value">Omaha, NE</div>
-      </div>
-    </div>
-  </div>
-</section>
+function toast(msg, err=false) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (err?' error':'');
+  setTimeout(() => el.className='toast', 2200);
+}
 
-<footer>
-  <p>Matthew Hicks</p>
-  <p>Sales Engineering &amp; Technical Solutions — 2026</p>
-</footer>
+// --- HELPERS ---
+function esc(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function fmtDate(d) { if(!d) return '—'; return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric'}); }
+function fmtTs(ts) {
+  const d = new Date(ts);
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+' '+d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+}
+function pilStatus(s) {
+  const m={Open:'pill-open','In Progress':'pill-progress',Resolved:'pill-resolved',Archived:'pill-archived'};
+  return `<span class="pill ${m[s]||'pill-open'}">${s}</span>`;
+}
+function pilPri(p) { return `<span class="pill pill-${p.toLowerCase()}">${p}</span>`; }
+function allTags() {
+  const tags = new Set(DEFAULT_TAGS);
+  tickets.forEach(t=>(t.tags||[]).forEach(g=>tags.add(g)));
+  return [...tags];
+}
+function getTickets() {
+  let t = tickets;
+  if (!showArchived) t = t.filter(x=>x.status!=='Archived');
+  if (filterStatus) t = t.filter(x=>x.status===filterStatus);
+  if (filterPriority) t = t.filter(x=>x.priority===filterPriority);
+  if (filterTag) t = t.filter(x=>x.tags&&x.tags.includes(filterTag));
+  return t;
+}
 
+// --- RENDER ---
+function render() {
+  const app = document.getElementById('app');
+  const visible = getTickets();
+  const total = tickets.filter(x=>x.status!=='Archived').length;
+  const p1 = tickets.filter(x=>x.priority==='P1'&&x.status!=='Archived'&&x.status!=='Resolved').length;
+  const inprog = tickets.filter(x=>x.status==='In Progress').length;
+  const resolved = tickets.filter(x=>x.status==='Resolved').length;
+
+  let html = `<div class="topbar">
+    <div class="logo"><span>[</span>TICKR<span>]</span></div>
+    <div class="stats" style="margin:0;flex:1;min-width:280px">
+      <div class="stat"><div class="stat-label">OPEN</div><div class="stat-val">${total}</div></div>
+      <div class="stat"><div class="stat-label">P1 CRITICAL</div><div class="stat-val p1c">${p1}</div></div>
+      <div class="stat"><div class="stat-label">IN PROGRESS</div><div class="stat-val p3c">${inprog}</div></div>
+      <div class="stat"><div class="stat-label">RESOLVED</div><div class="stat-val p4c">${resolved}</div></div>
+    </div>
+    <div class="tabs">
+      <button class="tab ${view==='list'?'active':''}" onclick="setView('list')">LIST</button>
+      <button class="tab ${view==='kanban'?'active':''}" onclick="setView('kanban')">KANBAN</button>
+    </div>
+    <button class="btn-new" onclick="openNew()">+ NEW TICKET</button>
+  </div>`;
+
+  html += `<div class="filters">
+    <span class="filter-label">FILTER:</span>
+    <select onchange="filterStatus=this.value;render()">
+      <option value="">All statuses</option>
+      ${STATUSES.map(s=>`<option value="${s}" ${filterStatus===s?'selected':''}>${s}</option>`).join('')}
+    </select>
+    <select onchange="filterPriority=this.value;render()">
+      <option value="">All priorities</option>
+      ${PRIORITIES.map(p=>`<option value="${p}" ${filterPriority===p?'selected':''}>${p}</option>`).join('')}
+    </select>
+    <select onchange="filterTag=this.value;render()">
+      <option value="">All tags</option>
+      ${allTags().map(t=>`<option value="${t}" ${filterTag===t?'selected':''}>${t}</option>`).join('')}
+    </select>
+    <button class="arch-toggle" onclick="showArchived=!showArchived;render()">${showArchived?'Hide':'Show'} archived</button>
+  </div>`;
+
+  html += view==='list' ? renderList(visible) : renderKanban();
+
+  if (modal==='new'||modal==='edit') html += renderFormModal();
+  if (modal==='detail'&&detailTicket) html += renderDetailModal();
+
+  app.innerHTML = html;
+}
+
+function renderList(t) {
+  if (!t.length) return `<div class="loading">No tickets found. Click + NEW TICKET to get started.</div>`;
+  return `<div>
+    <div class="list-header"><div>ID</div><div>TITLE</div><div>PRIORITY</div><div>STATUS</div><div>DUE</div><div>EST</div><div>TAGS</div><div></div></div>
+    ${t.map(tk=>`
+    <div class="list-row ${tk.status==='Archived'?'archived-row':''}" onclick="openDetail('${tk._id}')">
+      <div class="ticket-id">${esc(tk.ticketId)}</div>
+      <div class="ticket-title">${esc(tk.title)}</div>
+      <div>${pilPri(tk.priority)}</div>
+      <div>${pilStatus(tk.status)}</div>
+      <div style="font-size:11px;color:var(--text2)">${fmtDate(tk.due)}</div>
+      <div style="font-size:11px;color:var(--text2)">${tk.estimate?tk.estimate+'h':'—'}</div>
+      <div class="ticket-tags">${(tk.tags||[]).slice(0,2).map(g=>`<span class="tag-pill">${g}</span>`).join('')}</div>
+      <div class="row-action" onclick="event.stopPropagation()">
+        <button class="icon-btn" onclick="openEdit('${tk._id}')">✎</button>
+      </div>
+    </div>`).join('')}
+  </div>`;
+}
+
+function renderKanban() {
+  const cols = showArchived ? STATUSES : STATUSES.filter(c=>c!=='Archived');
+  let html = `<div class="kanban" style="grid-template-columns:repeat(${cols.length},minmax(0,1fr))">`;
+  cols.forEach(col=>{
+    let ct = tickets.filter(t=>t.status===col);
+    if (filterPriority) ct=ct.filter(t=>t.priority===filterPriority);
+    if (filterTag) ct=ct.filter(t=>t.tags&&t.tags.includes(filterTag));
+    html+=`<div><div class="col-header"><span>${col.toUpperCase()}</span><span class="col-count">${ct.length}</span></div>`;
+    if (!ct.length) html+=`<div class="empty-col">empty</div>`;
+    ct.forEach(t=>{
+      html+=`<div class="k-card" onclick="openDetail('${t._id}')">
+        <div class="k-card-id">${esc(t.ticketId)}</div>
+        <div class="k-card-title">${esc(t.title)}</div>
+        <div class="k-card-meta">
+          ${pilPri(t.priority)}
+          ${t.due?`<span style="font-size:10px;color:var(--text3)">${fmtDate(t.due)}</span>`:''}
+          ${(t.tags||[]).slice(0,1).map(g=>`<span class="tag-pill">${g}</span>`).join('')}
+        </div>
+      </div>`;
+    });
+    html+=`</div>`;
+  });
+  return html+'</div>';
+}
+
+function renderFormModal() {
+  const t = editTicket||{};
+  const isEdit = modal==='edit';
+  return `<div class="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-title">
+      <span>${isEdit?'EDIT: '+t.ticketId:'NEW TICKET'}</span>
+      <button class="icon-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="field-group">
+      <div class="field-label">TITLE *</div>
+      <input id="f-title" type="text" value="${esc(t.title||'')}" placeholder="Short description">
+    </div>
+    <div class="field-group">
+      <div class="field-label">DESCRIPTION</div>
+      <textarea id="f-desc" placeholder="Details, context, steps...">${esc(t.description||'')}</textarea>
+    </div>
+    <div class="field-row">
+      <div class="field-group">
+        <div class="field-label">PRIORITY *</div>
+        <select id="f-priority">
+          ${PRIORITIES.map(p=>`<option value="${p}" ${(t.priority||'P3')===p?'selected':''}>${p} — ${p==='P1'?'Critical':p==='P2'?'High':p==='P3'?'Medium':'Low'}</option>`).join('')}
+        </select>
+      </div>
+      <div class="field-group">
+        <div class="field-label">STATUS *</div>
+        <select id="f-status">
+          ${STATUSES.map(s=>`<option value="${s}" ${(t.status||'Open')===s?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field-group">
+        <div class="field-label">DUE DATE</div>
+        <input id="f-due" type="date" value="${t.due||''}">
+      </div>
+      <div class="field-group">
+        <div class="field-label">ESTIMATE (hours)</div>
+        <input id="f-estimate" type="number" min="0" step="0.5" value="${t.estimate||''}" placeholder="e.g. 2">
+      </div>
+    </div>
+    <div class="field-group">
+      <div class="field-label">TAGS (comma-separated)</div>
+      <input id="f-tags" type="text" value="${esc((t.tags||[]).join(', '))}" placeholder="bug, feature, work...">
+    </div>
+    ${isEdit?`<div class="field-group">
+      <div class="field-label">ADD COMMENT</div>
+      <textarea id="f-comment" placeholder="Optional note..."></textarea>
+    </div>`:''}
+    <div class="btn-row">
+      ${isEdit?`<button class="btn-danger" onclick="archiveTicket('${t._id}','${t.status}')">${t.status==='Archived'?'Unarchive':'Archive'}</button>`:''}
+      <button class="btn-sec" onclick="closeModal()">Cancel</button>
+      <button class="btn-pri" onclick="${isEdit?`saveEdit('${t._id}')`:' saveNew()'}">${isEdit?'Save Changes':'Create Ticket'}</button>
+    </div>
+  </div></div>`;
+}
+
+function renderDetailModal() {
+  const t = detailTicket;
+  return `<div class="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-title">
+      <span>${t.ticketId}</span>
+      <div style="display:flex;gap:6px;align-items:center">
+        <button class="icon-btn" onclick="openEdit('${t._id}')">✎</button>
+        <button class="icon-btn" onclick="closeModal()">✕</button>
+      </div>
+    </div>
+    <div class="detail-section">
+      <div style="font-size:15px;font-weight:500;margin-bottom:8px">${esc(t.title)}</div>
+      ${t.description?`<div style="font-size:12px;color:var(--text2);line-height:1.6">${esc(t.description)}</div>`:''}
+    </div>
+    <div class="detail-section">
+      <div class="detail-row"><div class="detail-key">Priority</div><div>${pilPri(t.priority)}</div></div>
+      <div class="detail-row"><div class="detail-key">Status</div><div>${pilStatus(t.status)}</div></div>
+      <div class="detail-row"><div class="detail-key">Due date</div><div>${fmtDate(t.due)}</div></div>
+      <div class="detail-row"><div class="detail-key">Estimate</div><div>${t.estimate?t.estimate+' hrs':'—'}</div></div>
+      <div class="detail-row"><div class="detail-key">Tags</div><div style="display:flex;gap:4px;flex-wrap:wrap">${(t.tags||[]).map(g=>`<span class="tag-pill">${g}</span>`).join('')||'—'}</div></div>
+      <div class="detail-row"><div class="detail-key">Opened</div><div style="font-size:11px">${fmtTs(t.createdAt)}</div></div>
+      ${t.updatedAt?`<div class="detail-row"><div class="detail-key">Updated</div><div style="font-size:11px">${fmtTs(t.updatedAt)}</div></div>`:''}
+    </div>
+    <div>
+      <div class="field-label" style="margin-bottom:8px">COMMENTS / NOTES</div>
+      ${(t.comments||[]).length?(t.comments.map(c=>`<div class="comment-item">${esc(c.text)}<div class="comment-ts">${fmtTs(c.ts)}</div></div>`).join('')):`<div style="font-size:11px;color:var(--text3);margin-bottom:8px">No comments yet.</div>`}
+      <div style="display:flex;gap:6px;margin-top:8px">
+        <input id="inline-comment" type="text" placeholder="Add a comment...">
+        <button class="btn-sec" style="white-space:nowrap;width:auto" onclick="addComment('${t._id}')">Add</button>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-danger" onclick="archiveTicket('${t._id}','${t.status}')">${t.status==='Archived'?'Unarchive':'Archive'}</button>
+      <button class="btn-sec" onclick="closeModal()">Close</button>
+    </div>
+  </div></div>`;
+}
+
+// --- ACTIONS ---
+function setView(v) { view=v; render(); }
+function closeModal() { modal=null; editTicket=null; detailTicket=null; render(); }
+function openNew() { modal='new'; editTicket=null; render(); }
+function openEdit(id) { editTicket=tickets.find(t=>t._id===id); modal='edit'; detailTicket=null; render(); }
+function openDetail(id) { detailTicket=tickets.find(t=>t._id===id); modal='detail'; render(); }
+
+function readForm() {
+  return {
+    title: document.getElementById('f-title').value.trim(),
+    description: document.getElementById('f-desc').value.trim(),
+    priority: document.getElementById('f-priority').value,
+    status: document.getElementById('f-status').value,
+    due: document.getElementById('f-due').value||null,
+    estimate: parseFloat(document.getElementById('f-estimate').value)||null,
+    tags: document.getElementById('f-tags').value.split(',').map(x=>x.trim()).filter(Boolean)
+  };
+}
+
+async function saveNew() {
+  const f = readForm();
+  if (!f.title) { toast('Title is required', true); return; }
+  f.ticketId = newTicketId();
+  try {
+    const created = await apiFetch('/api/tickets', 'POST', f);
+    tickets.unshift(created);
+    closeModal();
+    toast('Ticket created');
+  } catch(e) { toast('Error creating ticket', true); }
+}
+
+async function saveEdit(id) {
+  const f = readForm();
+  if (!f.title) { toast('Title is required', true); return; }
+  const commentText = document.getElementById('f-comment')?.value.trim();
+  const existing = tickets.find(t=>t._id===id);
+  const comments = [...(existing.comments||[])];
+  if (commentText) comments.push({text:commentText, ts:Date.now()});
+  const updates = {...f, comments};
+  try {
+    await apiFetch(`/api/tickets/${id}`, 'PATCH', updates);
+    const idx = tickets.findIndex(t=>t._id===id);
+    tickets[idx] = {...existing, ...updates, updatedAt: Date.now()};
+    closeModal();
+    toast('Ticket updated');
+  } catch(e) { toast('Error updating ticket', true); }
+}
+
+async function addComment(id) {
+  const txt = document.getElementById('inline-comment').value.trim();
+  if (!txt) return;
+  const existing = tickets.find(t=>t._id===id);
+  const comments = [...(existing.comments||[]), {text:txt, ts:Date.now()}];
+  try {
+    await apiFetch(`/api/tickets/${id}`, 'PATCH', {comments});
+    const idx = tickets.findIndex(t=>t._id===id);
+    tickets[idx] = {...existing, comments, updatedAt: Date.now()};
+    detailTicket = tickets[idx];
+    render();
+    toast('Comment added');
+  } catch(e) { toast('Error adding comment', true); }
+}
+
+async function archiveTicket(id, currentStatus) {
+  const newStatus = currentStatus==='Archived' ? 'Open' : 'Archived';
+  try {
+    await apiFetch(`/api/tickets/${id}`, 'PATCH', {status: newStatus});
+    const idx = tickets.findIndex(t=>t._id===id);
+    tickets[idx] = {...tickets[idx], status: newStatus, updatedAt: Date.now()};
+    closeModal();
+    toast(newStatus==='Archived' ? 'Ticket archived' : 'Ticket restored');
+  } catch(e) { toast('Error updating ticket', true); }
+}
+</script>
 </body>
 </html>
