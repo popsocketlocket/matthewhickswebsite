@@ -314,7 +314,7 @@ function sysComment(text){return {text,ts:Date.now(),system:true};}
 function render(){
   const app=document.getElementById('app');
   const allVis=getTickets();
-  const rootVis=allVis.filter(t=>!t.parentRecordId);
+  const rootVis=allVis.filter(t=>!t.parentRecordId).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
   const total=tickets.filter(x=>x.status!=='Archived'&&!x.parentRecordId).length;
   const p1=tickets.filter(x=>x.priority==='P1'&&x.status!=='Archived'&&x.status!=='Resolved').length;
   const inprog=tickets.filter(x=>x.status==='In Progress').length;
@@ -365,7 +365,7 @@ function renderList(rootTickets){
   if(!rootTickets.length)return`<div class="loading">No tickets found. Click + NEW to get started.</div>`;
   let groups='';
   function renderRow(t,depth){
-    const dc=getChildren(t.recordId).filter(c=>showArchived||c.status!=='Archived');
+    const dc=getChildren(t.recordId).filter(c=>showArchived||c.status!=='Archived').sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
     const hasKids=dc.length>0;
     const isExp=expandedIds.has(t.recordId);
     const pad=depth*18;
@@ -612,7 +612,7 @@ async function saveNew(){
   f.recordId=recordId;
   try{
     const created=await apiFetch('/api/tickets','POST',f);
-    tickets.unshift(created);
+    tickets.push(created);
     // auto-comment on parent that a child was created
     if(f.parentRecordId){
       expandedIds.add(f.parentRecordId);
