@@ -73,11 +73,17 @@ body.day .pill-resolved{background:#d5edc0;color:#1e4a00}
 .filter-label{font-size:11px;color:var(--text3)}
 .arch-toggle{font-size:11px;color:var(--p3);cursor:pointer;background:none;border:none;font-family:var(--font);padding:0}
 
-/* LIST — id | title | pri | status | due | est | tags | [quick] | [edit] */
-.list-header{display:grid;grid-template-columns:95px 1fr 65px 90px 80px 60px 80px 58px 28px;gap:6px;padding:6px 10px;border-bottom:0.5px solid var(--border);font-size:10px;color:var(--text3);letter-spacing:0.4px;margin-bottom:6px}
-.ticket-group{border:0.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:8px;background:var(--bg2)}
+/* LIST — sort | id | title | pri | status | due | est | tags | [quick] | [edit] */
+.list-header{display:grid;grid-template-columns:20px 95px 1fr 65px 90px 80px 60px 80px 58px 28px;gap:6px;padding:6px 10px;border-bottom:0.5px solid var(--border);font-size:10px;color:var(--text3);letter-spacing:0.4px;margin-bottom:6px}
+.ticket-group{border:0.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:8px;background:var(--bg2);border-left-width:3px}
 .ticket-group:hover{border-color:var(--border2)}
-.list-row{display:grid;grid-template-columns:95px 1fr 65px 90px 80px 60px 80px 58px 28px;gap:6px;padding:var(--row-padding) 10px;align-items:center;cursor:pointer;position:relative}
+.color-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.color-swatch{width:20px;height:20px;border-radius:4px;border:2px solid transparent;cursor:pointer;flex-shrink:0;transition:transform 0.1s}
+.color-swatch:hover{transform:scale(1.15)}
+.color-swatch.active{border-color:var(--text)}
+.color-swatch.none{background:var(--bg3);border:1px dashed var(--border2)}
+.color-custom{width:28px;height:20px;border-radius:4px;border:0.5px solid var(--border);cursor:pointer;padding:0;background:transparent}
+.list-row{display:grid;grid-template-columns:20px 95px 1fr 65px 90px 80px 60px 80px 58px 28px;gap:6px;padding:var(--row-padding) 10px;align-items:center;cursor:pointer;position:relative}
 .list-row:hover{background:var(--bg2)}
 .list-row.archived-row{opacity:0.45}
 .list-row.child-row{border-top:0.5px solid var(--border);background:rgba(255,255,255,0.02)}
@@ -92,6 +98,10 @@ body.day .list-row.child-row{background:rgba(0,0,0,0.02)}
 .icon-btn:hover{background:var(--bg3);color:var(--text)}
 .expand-btn{width:16px;height:16px;border:none;background:transparent;cursor:pointer;color:var(--text3);font-size:9px;display:inline-flex;align-items:center;justify-content:center;border-radius:3px;flex-shrink:0;padding:0;line-height:1}
 .expand-btn:hover{background:var(--bg3);color:var(--text)}
+.sort-arrows{display:flex;flex-direction:column;gap:1px;opacity:0;pointer-events:none;transition:opacity 0.15s}
+.list-row:hover .sort-arrows{opacity:1;pointer-events:auto}
+.sort-btn{width:14px;height:11px;border:none;background:transparent;cursor:pointer;color:var(--text3);font-size:8px;display:flex;align-items:center;justify-content:center;padding:0;line-height:1;border-radius:2px}
+.sort-btn:hover{background:var(--bg3);color:var(--text)}
 /* quick in-progress button — hidden until row hover */
 .btn-quick-prog{padding:2px 8px;border:0.5px solid var(--p3);border-radius:3px;font-size:10px;font-family:var(--font);background:transparent;color:var(--p3);cursor:pointer;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.15s}
 .list-row:hover .btn-quick-prog{opacity:1;pointer-events:auto}
@@ -227,6 +237,9 @@ let filterStatus='',filterPriority='',filterTag='';
 let showArchived=false;
 let modal=null,editTicket=null,detailTicket=null,newChildParent=null;
 let expandedIds=new Set();
+// sort order is stored as ticket.sortIndex in MongoDB — no local state needed
+
+const PRESET_COLORS=['#e24b4a','#ef9f27','#639922','#378add','#7f77dd','#d4537e','#1d9e75','#d85a30','#888780'];
 
 // ── NUMBERING ─────────────────────────────────────────────
 function letterSuffix(n){
@@ -314,7 +327,11 @@ function sysComment(text){return {text,ts:Date.now(),system:true};}
 function render(){
   const app=document.getElementById('app');
   const allVis=getTickets();
-  const rootVis=allVis.filter(t=>!t.parentRecordId).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+  const rootVis=allVis.filter(t=>!t.parentRecordId).sort((a,b)=>{
+    const ai=a.sortIndex!=null?a.sortIndex:(a.createdAt||0);
+    const bi=b.sortIndex!=null?b.sortIndex:(b.createdAt||0);
+    return ai-bi;
+  });
   const total=tickets.filter(x=>x.status!=='Archived'&&!x.parentRecordId).length;
   const p1=tickets.filter(x=>x.priority==='P1'&&x.status!=='Archived'&&x.status!=='Resolved').length;
   const inprog=tickets.filter(x=>x.status==='In Progress').length;
@@ -361,16 +378,53 @@ function render(){
   app.innerHTML=html;
 }
 
+function siblingSort(a,b){
+  const ai=a.sortIndex!=null?a.sortIndex:(a.createdAt||0);
+  const bi=b.sortIndex!=null?b.sortIndex:(b.createdAt||0);
+  return ai-bi;
+}
+
+async function shiftTicket(recordId,dir){
+  const t=tickets.find(x=>x.recordId===recordId);
+  if(!t)return;
+  const siblings=(t.parentRecordId
+    ?tickets.filter(x=>x.parentRecordId===t.parentRecordId&&(showArchived||x.status!=='Archived'))
+    :getTickets().filter(x=>!x.parentRecordId)
+  ).sort(siblingSort);
+  const idx=siblings.findIndex(x=>x.recordId===recordId);
+  const swapIdx=idx+dir;
+  if(swapIdx<0||swapIdx>=siblings.length)return;
+  const a=siblings[idx], b=siblings[swapIdx];
+  const ai=a.sortIndex!=null?a.sortIndex:(a.createdAt||0);
+  const bi=b.sortIndex!=null?b.sortIndex:(b.createdAt||0);
+  // swap sortIndex values
+  try{
+    await apiFetch(`/api/tickets/${a._id}`,'PATCH',{sortIndex:bi});
+    await apiFetch(`/api/tickets/${b._id}`,'PATCH',{sortIndex:ai});
+    const ia=tickets.findIndex(x=>x._id===a._id);
+    const ib=tickets.findIndex(x=>x._id===b._id);
+    tickets[ia]={...a,sortIndex:bi};
+    tickets[ib]={...b,sortIndex:ai};
+    render();
+  }catch(e){toast('Error reordering',true);}
+}
+
 function renderList(rootTickets){
   if(!rootTickets.length)return`<div class="loading">No tickets found. Click + NEW to get started.</div>`;
   let groups='';
-  function renderRow(t,depth){
-    const dc=getChildren(t.recordId).filter(c=>showArchived||c.status!=='Archived').sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+  function renderRow(t,depth,siblings,sibIdx){
+    const dc=getChildren(t.recordId).filter(c=>showArchived||c.status!=='Archived').sort(siblingSort);
     const hasKids=dc.length>0;
     const isExp=expandedIds.has(t.recordId);
     const pad=depth*18;
     const canQuick=t.status==='Idea'||t.status==='Open';
+    const canUp=sibIdx>0;
+    const canDown=sibIdx<(siblings||[]).length-1;
     let html=`<div class="list-row ${t.status==='Archived'?'archived-row':''} ${depth>0?'child-row':''}" onclick="openDetail('${t._id}')">
+      <div class="sort-arrows" onclick="event.stopPropagation()">
+        <button class="sort-btn" onclick="shiftTicket('${t.recordId}',-1)" ${!canUp?'disabled style="opacity:0.2;cursor:default"':''}title="Move up">▲</button>
+        <button class="sort-btn" onclick="shiftTicket('${t.recordId}',1)" ${!canDown?'disabled style="opacity:0.2;cursor:default"':''}title="Move down">▼</button>
+      </div>
       <div class="ticket-id" style="padding-left:${pad}px">
         ${hasKids?`<button class="expand-btn" onclick="event.stopPropagation();toggleExpand('${t.recordId}')">${isExp?'▾':'▸'}</button>`:'<span style="width:16px;display:inline-block;flex-shrink:0"></span>'}
         <span class="ticket-id-text">${esc(t.recordId)}</span>
@@ -388,11 +442,16 @@ function renderList(rootTickets){
         <button class="icon-btn" onclick="openEdit('${t._id}')">✎</button>
       </div>
     </div>`;
-    if(hasKids&&isExp)dc.forEach(c=>{html+=renderRow(c,depth+1);});
+    if(hasKids&&isExp)dc.forEach((c,ci)=>{html+=renderRow(c,depth+1,dc,ci);});
     return html;
   }
-  rootTickets.forEach(t=>{groups+=`<div class="ticket-group">${renderRow(t,0)}</div>`;});
-  return`<div><div class="list-header"><div>ID</div><div>TITLE</div><div>PRIORITY</div><div>STATUS</div><div>DUE</div><div>EST</div><div>TAGS</div><div></div><div></div></div>${groups}</div>`;
+  rootTickets.forEach((t,ti)=>{
+    const col=t.color||'';
+    const borderStyle=col?`border-left-color:${col};`:'border-left-color:var(--border);';
+    const bgStyle=col?`background:${col}18;`:'';
+    groups+=`<div class="ticket-group" style="${borderStyle}${bgStyle}">${renderRow(t,0,rootTickets,ti)}</div>`;
+  });
+  return`<div><div class="list-header"><div></div><div>ID</div><div>TITLE</div><div>PRIORITY</div><div>STATUS</div><div>DUE</div><div>EST</div><div>TAGS</div><div></div><div></div></div>${groups}</div>`;
 }
 
 function renderKanban(){
@@ -424,6 +483,9 @@ function renderFormModal(){
   const isEdit=modal==='edit';
   const isChild=!!newChildParent;
   const parentOptions=tickets.filter(x=>!x.parentRecordId&&(!isEdit||x._id!==t._id));
+  const parentTicket=newChildParent||(t.parentRecordId?tickets.find(x=>x.recordId===t.parentRecordId):null);
+  const inheritedColor=parentTicket?parentTicket.color||'':'';
+  const inheritedTags=parentTicket?(parentTicket.tags||[]).join(', '):'';
   return`<div class="overlay" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <div class="modal-title">
@@ -440,7 +502,15 @@ function renderFormModal(){
       <div class="field-group"><div class="field-label">DUE DATE</div><input id="f-due" type="date" value="${t.due||''}"></div>
       <div class="field-group"><div class="field-label">ESTIMATE (hours)</div><input id="f-estimate" type="number" min="0" step="0.5" value="${t.estimate||''}" placeholder="e.g. 2"></div>
     </div>
-    <div class="field-group"><div class="field-label">TAGS (comma-separated)</div><input id="f-tags" type="text" value="${esc((t.tags||[]).join(', '))}" placeholder="bug, feature, work..."></div>
+    <div class="field-group"><div class="field-label">TAGS (comma-separated)</div><input id="f-tags" type="text" value="${esc(t.tags&&t.tags.length?(t.tags||[]).join(', '):inheritedTags)}" placeholder="bug, feature, work..."></div>
+    <div class="field-group"><div class="field-label">COLOR <span style="font-size:9px;color:var(--text3)">(optional)</span></div>
+      <div class="color-row">
+        <div class="color-swatch none ${!(t.color||inheritedColor)?'active':''}" title="None" onclick="document.getElementById('f-color').value='';document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('active'));this.classList.add('active')"></div>
+        ${PRESET_COLORS.map(col=>`<div class="color-swatch ${(t.color||inheritedColor)===col?'active':''}" style="background:${col}" title="${col}" onclick="document.getElementById('f-color').value='${col}';document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('active'));this.classList.add('active')"></div>`).join('')}
+        <input type="color" class="color-custom" id="f-color-pick" value="${t.color||inheritedColor||'#378add'}" oninput="document.getElementById('f-color').value=this.value;document.querySelectorAll('.color-swatch').forEach(s=>s.classList.remove('active'))" title="Custom color">
+        <input type="hidden" id="f-color" value="${t.color||inheritedColor||''}">
+      </div>
+    </div>
     ${!isChild&&!isEdit?`<div class="field-group"><div class="field-label">PARENT TICKET (optional)</div><select id="f-parent"><option value="">None (root ticket)</option>${parentOptions.map(p=>`<option value="${p.recordId}" ${(t.parentRecordId||'')===p.recordId?'selected':''}>${p.recordId} — ${esc(p.title)}</option>`).join('')}</select></div>`:`<input type="hidden" id="f-parent" value="${isChild?newChildParent.recordId:(t.parentRecordId||'')}">` }
     ${isEdit?`<div class="field-group"><div class="field-label">ADD COMMENT</div><textarea id="f-comment" placeholder="Optional note..."></textarea></div>`:''}
     <div class="btn-row">
@@ -471,6 +541,7 @@ function renderDetailModal(){
       ${parent?`<div><span style="font-size:10px;color:var(--text3);margin-right:6px">PARENT</span><span class="parent-badge" onclick="navToTicket('${parent._id}')">${esc(parent.recordId)} — ${esc(parent.title)}</span></div>`:''}
     </div>
     <div class="detail-section">
+      ${t.color?`<div class="detail-row"><div class="detail-key">Color</div><div style="display:flex;align-items:center;gap:6px"><div style="width:14px;height:14px;border-radius:3px;background:${t.color};flex-shrink:0"></div><span style="font-size:11px;color:var(--text3)">${t.color}</span></div></div>`:''}
       <div class="detail-row"><div class="detail-key">Priority</div><div>${pilPri(t.priority)}</div></div>
       <div class="detail-row">
         <div class="detail-key">Status</div>
@@ -506,6 +577,7 @@ function renderDetailModal(){
     </div>
     <div class="btn-row">
       <button class="btn-danger" onclick="archiveTicket('${t._id}','${t.status}')">${t.status==='Archived'?'Unarchive':'Archive'}</button>
+      ${t.status==='Archived'?`<button class="btn-danger" style="border-color:#a32d2d;background:rgba(226,75,74,0.1)" onclick="deleteTicket('${t._id}')">✕ Delete</button>`:''}
       <button class="btn-child" onclick="openNewChild('${t._id}')">+ Child</button>
       ${!isResolved?`<button class="btn-resolve" onclick="openResolve('${t._id}')">✓ Resolve</button>`:''}
       <button class="btn-sec" onclick="closeModal()">Close</button>
@@ -601,7 +673,8 @@ function readForm(){
     estimate:parseFloat(document.getElementById('f-estimate').value)||null,
     tags:document.getElementById('f-tags').value.split(',').map(x=>x.trim()).filter(Boolean),
     parentRecordId:parentEl?parentEl.value||null:null,
-    newRecordId:recordIdEl?recordIdEl.value.trim():null
+    newRecordId:recordIdEl?recordIdEl.value.trim():null,
+    color:(document.getElementById('f-color')?.value||null)||null
   };
 }
 
@@ -740,6 +813,35 @@ async function archiveTicket(id,currentStatus){
     closeModal();toast(newStatus==='Archived'?'Ticket archived':'Ticket restored');
   }catch(e){toast('Error updating ticket',true);}
 }
+
+async function deleteTicket(id){
+  if(!confirm('Permanently delete this ticket and all its children? This cannot be undone.'))return;
+  const t=tickets.find(x=>x._id===id);
+  if(!t)return;
+  // collect all descendants
+  const toDelete=[id];
+  function collectDesc(recordId){
+    tickets.filter(x=>x.parentRecordId===recordId).forEach(c=>{toDelete.push(c._id);collectDesc(c.recordId);});
+  }
+  collectDesc(t.recordId);
+  try{
+    for(const did of toDelete){
+      await apiFetch(`/api/tickets/${did}`,'DELETE');
+      const idx=tickets.findIndex(x=>x._id===did);
+      if(idx>-1)tickets.splice(idx,1);
+    }
+    closeModal();toast('Ticket deleted');
+  }catch(e){toast('Error deleting ticket',true);}
+}
+
+// Enter key opens new ticket (when no modal is open and not typing in an input)
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&!modal){
+    const tag=document.activeElement?.tagName;
+    if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT')return;
+    openNew();
+  }
+});
 </script>
 </body>
 </html>
