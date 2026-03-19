@@ -333,15 +333,26 @@ function render(){
     return ai-bi;
   });
   const total=tickets.filter(x=>x.status!=='Archived'&&!x.parentRecordId).length;
-  const p1=tickets.filter(x=>x.priority==='P1'&&x.status!=='Archived'&&x.status!=='Resolved').length;
   const inprog=tickets.filter(x=>x.status==='In Progress').length;
   const resolved=tickets.filter(x=>x.status==='Resolved').length;
+  // closest due: unresolved, unarchived, has a due date
+  const upcoming=tickets
+    .filter(x=>x.due&&x.status!=='Resolved'&&x.status!=='Archived')
+    .sort((a,b)=>new Date(a.due)-new Date(b.due));
+  const nextDue=upcoming[0]||null;
+  const nextDueLabel=nextDue?fmtDate(nextDue.due):'—';
+  const nextDueTitle=nextDue?nextDue.recordId+': '+nextDue.title:'none';
+  const nextDueOverdue=nextDue&&new Date(nextDue.due)<new Date()?true:false;
 
   let html=`<div class="topbar">
     <div class="logo"><span>[</span>Stickey<span>]</span></div>
     ${settings.showStats?`<div class="stats" style="margin:0;flex:1;min-width:280px">
       <div class="stat"><div class="stat-label">OPEN</div><div class="stat-val">${total}</div></div>
-      <div class="stat"><div class="stat-label">P1 CRITICAL</div><div class="stat-val p1c">${p1}</div></div>
+      <div class="stat" title="${nextDueTitle}" style="cursor:${nextDue?'pointer':'default'}" onclick="${nextDue?`openDetail('${nextDue._id}')`:''}">
+        <div class="stat-label">NEXT DUE</div>
+        <div class="stat-val ${nextDueOverdue?'p1c':'p3c'}" style="font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${nextDueTitle}">${nextDueLabel}</div>
+        ${nextDue?`<div style="font-size:9px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px">${esc(nextDue.recordId)}</div>`:''}
+      </div>
       <div class="stat"><div class="stat-label">IN PROGRESS</div><div class="stat-val p3c">${inprog}</div></div>
       <div class="stat"><div class="stat-label">RESOLVED</div><div class="stat-val p4c">${resolved}</div></div>
     </div>`:'<div style="flex:1"></div>'}
@@ -486,6 +497,9 @@ function renderFormModal(){
   const parentTicket=newChildParent||(t.parentRecordId?tickets.find(x=>x.recordId===t.parentRecordId):null);
   const inheritedColor=parentTicket?parentTicket.color||'':'';
   const inheritedTags=parentTicket?(parentTicket.tags||[]).join(', '):'';
+  const tmr=new Date();tmr.setDate(tmr.getDate()+1);
+  const defaultDue=tmr.toISOString().slice(0,10);
+  const defaultEstimate=1;
   return`<div class="overlay" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <div class="modal-title">
@@ -499,8 +513,8 @@ function renderFormModal(){
       <div class="field-group"><div class="field-label">STATUS *</div><select id="f-status">${STATUSES.map(s=>`<option value="${s}" ${(t.status||'Idea')===s?'selected':''}>${s}</option>`).join('')}</select></div>
     </div>
     <div class="field-row">
-      <div class="field-group"><div class="field-label">DUE DATE</div><input id="f-due" type="date" value="${t.due||''}"></div>
-      <div class="field-group"><div class="field-label">ESTIMATE (hours)</div><input id="f-estimate" type="number" min="0" step="0.5" value="${t.estimate||''}" placeholder="e.g. 2"></div>
+      <div class="field-group"><div class="field-label">DUE DATE</div><input id="f-due" type="date" value="${t.due||(isEdit?'':(parentTicket&&parentTicket.due)||defaultDue)}"></div>
+      <div class="field-group"><div class="field-label">ESTIMATE (hours)</div><input id="f-estimate" type="number" min="0" step="0.5" value="${t.estimate!=null?t.estimate:(isEdit?'':(parentTicket&&parentTicket.estimate)||defaultEstimate)}"></div>
     </div>
     <div class="field-group"><div class="field-label">TAGS (comma-separated)</div><input id="f-tags" type="text" value="${esc(t.tags&&t.tags.length?(t.tags||[]).join(', '):inheritedTags)}" placeholder="bug, feature, work..."></div>
     <div class="field-group"><div class="field-label">COLOR <span style="font-size:9px;color:var(--text3)">(optional)</span></div>
@@ -685,6 +699,10 @@ async function saveNew(){
   const recordId=f.parentRecordId?nextChildRecordId(f.parentRecordId):nextRootRecordId();
   if(tickets.find(t=>t.recordId===recordId)){toast('Record ID conflict, please retry',true);return;}
   f.recordId=recordId;
+  // assign random color to new root tickets that have no color set
+  if(!f.parentRecordId&&!f.color){
+    f.color=PRESET_COLORS[Math.floor(Math.random()*PRESET_COLORS.length)];
+  }
   try{
     const created=await apiFetch('/api/tickets','POST',f);
     tickets.push(created);
