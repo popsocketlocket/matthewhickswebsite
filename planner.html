@@ -445,7 +445,7 @@ function renderList(rootTickets){
       <div>${pilStatus(t.status)}</div>
       <div style="font-size:11px;color:var(--text2)">${fmtDate(t.due)}</div>
       <div style="font-size:11px;color:var(--text2)">${t.estimate?t.estimate+'h':'—'}</div>
-      <div class="ticket-tags">${(t.tags||[]).slice(0,2).map(g=>`<span class="tag-pill">${g}</span>`).join('')}</div>
+      <div class="ticket-tags">${(t.tags||[]).slice(0,1).map(g=>`<span class="tag-pill">${g}</span>`).join('')}</div>
       <div style="display:flex;align-items:center;justify-content:center" onclick="event.stopPropagation()">
         ${canQuick?`<button class="btn-quick-prog" onclick="quickProgress('${t._id}')">▶ Start</button>`:''}
       </div>
