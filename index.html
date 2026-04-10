@@ -3,612 +3,508 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Matthew Hicks — Sales Engineering & IT Solutions</title>
+<title>Matt Hicks — Print Solutions Specialist</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ink: #0f0e0c;
-    --paper: #f5f2ec;
-    --accent: #c84b2f;
-    --muted: #7a7469;
-    --rule: #d6d1c7;
+    --navy: #1a2e44;
+    --navy-light: #2a4160;
+    --blue: #4a90b8;
+    --baby-blue: #b8d8ed;
+    --sky: #deeef8;
+    --sky-light: #f0f7fc;
+    --white: #ffffff;
+    --cream: #f8f9fb;
+    --text: #1a2e44;
+    --text-mid: #4a5568;
+    --text-muted: #7a8a9a;
+    --border: #d0e4f0;
   }
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
 
   body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: Georgia, 'Times New Roman', serif;
-    line-height: 1.6;
-    overflow-x: hidden;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    background: var(--white);
+    font-size: 16px;
+    line-height: 1.7;
   }
 
-  /* ── NAV ── */
   nav {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 1.4rem 5rem;
-    border-bottom: 1px solid var(--rule);
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
-  .nav-name {
-    font-family: 'Courier New', monospace;
+  .nav-logo { font-family: 'DM Serif Display', serif; font-size: 1.2rem; color: var(--navy); text-decoration: none; }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--text-mid); font-size: 0.875rem; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--blue); }
+
+  .ai-badge {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--blue);
+    background: var(--sky-light);
+    border: 1px solid var(--border);
+    padding: 0.3rem 0.7rem;
+    border-radius: 50px;
+    cursor: default;
+    user-select: none;
+    transition: background 0.2s;
+  }
+  .ai-badge:hover { background: var(--sky); }
+  .ai-badge-dot { width: 6px; height: 6px; background: var(--blue); border-radius: 50%; opacity: 0.7; }
+  .ai-tooltip {
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    background: var(--navy);
+    color: white;
     font-size: 0.78rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--muted);
+    line-height: 1.6;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    width: 240px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    z-index: 200;
+    white-space: normal;
   }
-  .nav-location {
-    font-family: 'Courier New', monospace;
-    font-size: 0.75rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
+  .ai-tooltip::before {
+    content: '';
+    position: absolute;
+    top: -6px; right: 16px;
+    width: 10px; height: 10px;
+    background: var(--navy);
+    transform: rotate(45deg);
+    border-radius: 2px;
   }
+  .ai-badge:hover .ai-tooltip { display: block; }
 
-  /* ── HERO ── */
   .hero {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    min-height: 90vh;
-  }
-
-  /* Left: photo + name */
-  .hero-left {
-    display: flex; flex-direction: column;
-    border-right: 1px solid var(--rule);
-  }
-  .headshot-area {
-    flex: 1;
-    background: var(--rule);
-    display: flex; align-items: center; justify-content: center;
-    min-height: 340px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(160deg, var(--white) 55%, var(--sky) 100%);
+    padding: 6rem 2rem 4rem;
     position: relative;
     overflow: hidden;
   }
-  .headshot-area img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-  .headshot-placeholder {
-    display: flex; flex-direction: column; align-items: center; gap: 0.75rem;
-    color: var(--muted);
-  }
-  .headshot-placeholder svg {
-    width: 56px; height: 56px;
-    opacity: 0.35;
-  }
-  .headshot-placeholder span {
-    font-family: 'Courier New', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    opacity: 0.5;
-  }
-  .hero-nameplate {
-    padding: 2.5rem 3.5rem;
-    border-top: 1px solid var(--rule);
-  }
-  .hero-tag {
-    font-family: 'Courier New', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 0.9rem;
-  }
-  .hero-name {
-    font-size: clamp(2.4rem, 4vw, 3.8rem);
-    line-height: 1.05;
-    letter-spacing: -0.02em;
-  }
-  .hero-name em { font-style: italic; color: var(--accent); }
-
-  /* Right: bio + contact */
-  .hero-right {
-    display: flex; flex-direction: column; justify-content: center;
-    padding: 5rem 5rem 5rem 4.5rem;
-    gap: 2.5rem;
-  }
-  .hero-bio p {
-    font-size: 0.98rem;
-    color: var(--muted);
-    line-height: 1.85;
-    margin-bottom: 1rem;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-weight: 300;
-  }
-  .hero-bio p strong { color: var(--ink); font-weight: 600; }
-  .hero-bio p:last-child { margin-bottom: 0; }
-
-  .hero-divider {
-    width: 3rem; height: 1px;
-    background: var(--rule);
-  }
-
-  .hero-contact {
-    font-family: 'Courier New', monospace;
-    font-size: 0.75rem;
-    color: var(--muted);
-    display: flex; flex-direction: column; gap: 0.5rem;
-    line-height: 1.5;
-  }
-
-  .certs-inline {
-    padding-top: 1rem;
-    border-top: 1px solid var(--rule);
-  }
-  .certs-label {
-    font-family: 'Courier New', monospace;
-    font-size: 0.66rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 0.9rem;
-  }
-  .cert-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
-  .cert-list li {
-    font-size: 0.84rem;
-    padding-left: 1.2rem;
-    position: relative;
-    line-height: 1.4;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    color: var(--ink);
-  }
-  .cert-list li::before {
-    content: '→';
-    position: absolute; left: 0;
-    color: var(--accent);
-    font-family: 'Courier New', monospace;
-    font-size: 0.7rem;
-    top: 0.15rem;
-  }
-
-  /* ── SECTIONS ── */
-  section { padding: 5.5rem 5rem; border-top: 1px solid var(--rule); }
-
-  .section-label {
-    font-family: 'Courier New', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 1rem;
-    display: flex; align-items: center; gap: 1rem;
-  }
-  .section-label::after {
+  .hero::before {
     content: '';
-    display: block;
-    height: 1px; width: 3rem;
-    background: var(--accent);
+    position: absolute;
+    top: -120px; right: -120px;
+    width: 520px; height: 520px;
+    border-radius: 50%;
+    background: var(--sky);
+    opacity: 0.5;
+    z-index: 0;
   }
-  .section-title {
-    font-size: clamp(1.9rem, 3.5vw, 2.8rem);
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-    margin-bottom: 3rem;
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: -80px;
+    width: 340px; height: 340px;
+    border-radius: 50%;
+    background: var(--baby-blue);
+    opacity: 0.3;
+    z-index: 0;
   }
-
-  /* ── VALUE ── */
-  .value-section { background: var(--ink); color: var(--paper); border-top: none; }
-  .value-section .section-label { color: var(--accent); }
-  .value-section .section-label::after { background: var(--accent); }
-  .value-section .section-title { color: var(--paper); }
-  .value-grid {
+  .hero-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    border: 1px solid rgba(255,255,255,0.1);
-    margin-top: 3rem;
-  }
-  .value-card {
-    padding: 2.5rem;
-    border-right: 1px solid rgba(255,255,255,0.1);
-  }
-  .value-card:last-child { border-right: none; }
-  .value-num {
-    font-size: 3rem;
-    color: var(--accent);
-    line-height: 1;
-    margin-bottom: 1.2rem;
-    font-style: italic;
-  }
-  .value-title {
-    font-size: 0.95rem;
-    font-weight: 600;
-    margin-bottom: 0.8rem;
-    color: var(--paper);
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  }
-  .value-body {
-    font-size: 0.86rem;
-    color: rgba(245,242,236,0.5);
-    line-height: 1.75;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-weight: 300;
-  }
-
-  /* ── EXPERIENCE ── */
-  .exp-list { display: flex; flex-direction: column; }
-  .exp-item {
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    border-top: 1px solid var(--rule);
-    padding: 2.5rem 0;
-  }
-  .exp-item:last-child { border-bottom: 1px solid var(--rule); }
-  .exp-meta { padding-right: 3rem; padding-top: 0.2rem; }
-  .exp-company {
-    font-family: 'Courier New', monospace;
-    font-size: 0.72rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 0.35rem;
-  }
-  .exp-period {
-    font-family: 'Courier New', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-  }
-  .exp-title {
-    font-size: 1.4rem;
-    margin-bottom: 0.9rem;
-    letter-spacing: -0.01em;
-  }
-  .exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
-  .exp-bullets li {
-    font-size: 0.88rem;
-    color: var(--muted);
-    padding-left: 1.2rem;
+    grid-template-columns: 1fr 380px;
+    gap: 4rem;
+    align-items: center;
     position: relative;
-    line-height: 1.55;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-weight: 300;
+    z-index: 1;
   }
-  .exp-bullets li::before {
-    content: '—';
-    position: absolute; left: 0;
-    color: var(--rule);
-  }
-
-  /* ── SKILLS ── */
-  .skills-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    border: 1px solid var(--rule);
-  }
-  .skill-group {
-    padding: 2.2rem;
-    border-right: 1px solid var(--rule);
-    border-bottom: 1px solid var(--rule);
-  }
-  .skill-group:nth-child(3n) { border-right: none; }
-  .skill-group:nth-last-child(-n+3) { border-bottom: none; }
-  .skill-group-title {
-    font-family: 'Courier New', monospace;
-    font-size: 0.66rem;
-    letter-spacing: 0.16em;
+  .hero-eyebrow {
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 1.1rem;
-  }
-  .skill-tags { display: flex; flex-wrap: wrap; gap: 0.45rem; }
-  .skill-tag {
-    font-size: 0.76rem;
-    padding: 0.28rem 0.65rem;
-    border: 1px solid var(--rule);
-    color: var(--ink);
-    font-family: 'Courier New', monospace;
-  }
-
-  /* ── CONTACT ── */
-  .contact-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 5rem;
-    align-items: start;
-  }
-  .contact-copy p {
-    font-size: 0.96rem;
-    color: var(--muted);
-    line-height: 1.8;
+    color: var(--blue);
     margin-bottom: 1rem;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-weight: 300;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
   }
-  .contact-items { display: flex; flex-direction: column; }
-  .contact-item {
-    padding: 1.3rem 1.5rem;
-    border: 1px solid var(--rule);
-    border-bottom: none;
-    display: flex; flex-direction: column; gap: 0.25rem;
+  .hero-eyebrow::before { content: ''; display: block; width: 28px; height: 2px; background: var(--blue); border-radius: 2px; }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.8rem, 6vw, 4.2rem);
+    line-height: 1.1;
+    color: var(--navy);
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
   }
-  .contact-item:last-child { border-bottom: 1px solid var(--rule); }
-  .contact-item-label {
-    font-family: 'Courier New', monospace;
-    font-size: 0.66rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .contact-item-value {
-    font-family: 'Courier New', monospace;
-    font-size: 0.82rem;
-    color: var(--ink);
-  }
+  .hero h1 em { font-style: italic; color: var(--blue); }
+  .hero-bio { font-size: 1.05rem; color: var(--text-mid); line-height: 1.8; max-width: 540px; margin-bottom: 2rem; }
+  .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; }
 
-  /* ── FOOTER ── */
-  footer {
-    border-top: 1px solid var(--rule);
-    padding: 1.8rem 5rem;
-    display: flex; justify-content: space-between; align-items: center;
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--navy); color: white; text-decoration: none;
+    padding: 0.75rem 1.75rem; border-radius: 50px;
+    font-size: 0.9rem; font-weight: 500;
+    transition: background 0.2s, transform 0.15s;
   }
-  footer p {
-    font-family: 'Courier New', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-  }
+  .btn-primary:hover { background: var(--navy-light); transform: translateY(-1px); }
 
-  /* ── RESPONSIVE ── */
-  @media (max-width: 860px) {
-    nav { padding: 1rem 1.5rem; }
-    .hero { grid-template-columns: 1fr; min-height: auto; }
-    .hero-left { border-right: none; border-bottom: 1px solid var(--rule); }
-    .headshot-area { min-height: 280px; }
-    .hero-nameplate { padding: 2rem 1.5rem; }
-    .hero-right { padding: 3rem 1.5rem; }
-    section { padding: 3.5rem 1.5rem; }
-    .exp-item { grid-template-columns: 1fr; }
-    .exp-meta { padding-right: 0; padding-bottom: 0.5rem; }
-    .skills-grid { grid-template-columns: 1fr 1fr; }
-    .skill-group:nth-child(3n) { border-right: 1px solid var(--rule); }
-    .skill-group:nth-child(2n) { border-right: none; }
-    .skill-group:nth-last-child(-n+3) { border-bottom: 1px solid var(--rule); }
-    .skill-group:nth-last-child(-n+2) { border-bottom: none; }
-    .value-grid { grid-template-columns: 1fr; }
-    .value-card { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
-    .value-card:last-child { border-bottom: none; }
-    .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }
-    footer { padding: 1.8rem 1.5rem; flex-direction: column; gap: 0.4rem; text-align: center; }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: transparent; color: var(--navy); text-decoration: none;
+    padding: 0.75rem 1.75rem; border-radius: 50px;
+    border: 1.5px solid var(--navy);
+    font-size: 0.9rem; font-weight: 500;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-secondary:hover { background: var(--sky-light); transform: translateY(-1px); }
+
+  .hero-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 20px 60px rgba(74,144,184,0.12);
+  }
+  .hero-card-title { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.25rem; }
+  .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+  .stat-box { background: var(--sky-light); border-radius: 12px; padding: 1rem; text-align: center; }
+  .stat-number { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--navy); line-height: 1; margin-bottom: 0.25rem; }
+  .stat-label { font-size: 0.75rem; color: var(--text-muted); line-height: 1.3; }
+  .hero-location { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: var(--text-mid); padding-top: 1.25rem; border-top: 1px solid var(--border); }
+  .dot { width: 8px; height: 8px; background: #3dba7f; border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(1.2)} }
+
+  section { padding: 5rem 2rem; }
+  .section-inner { max-width: 1100px; margin: 0 auto; }
+  .section-label {
+    font-size: 0.75rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--blue); margin-bottom: 0.75rem;
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .section-label::before { content: ''; display: block; width: 20px; height: 2px; background: var(--blue); border-radius: 2px; }
+  .section-title { font-family: 'DM Serif Display', serif; font-size: clamp(1.8rem, 4vw, 2.6rem); color: var(--navy); letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 3rem; }
+
+  .what-i-do { background: var(--cream); }
+  .focus-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+  .focus-card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem; transition: transform 0.2s, box-shadow 0.2s; }
+  .focus-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(74,144,184,0.12); }
+  .focus-icon { width: 44px; height: 44px; background: var(--sky); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; font-size: 20px; }
+  .focus-card h3 { font-family: 'DM Serif Display', serif; font-size: 1.15rem; color: var(--navy); margin-bottom: 0.5rem; }
+  .focus-card p { font-size: 0.9rem; color: var(--text-mid); line-height: 1.65; }
+
+  .timeline { position: relative; padding-left: 2rem; }
+  .timeline::before { content: ''; position: absolute; left: 0; top: 8px; width: 2px; bottom: 0; background: linear-gradient(to bottom, var(--baby-blue), transparent); }
+  .timeline-item { position: relative; margin-bottom: 3rem; }
+  .timeline-item::before { content: ''; position: absolute; left: -2.45rem; top: 8px; width: 10px; height: 10px; background: var(--blue); border-radius: 50%; border: 2px solid var(--white); box-shadow: 0 0 0 2px var(--blue); }
+  .timeline-meta { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.4rem; }
+  .timeline-date { font-size: 0.78rem; font-weight: 500; color: var(--blue); background: var(--sky-light); padding: 0.2rem 0.65rem; border-radius: 50px; border: 1px solid var(--border); }
+  .timeline-company { font-size: 0.85rem; color: var(--text-muted); }
+  .timeline-title { font-family: 'DM Serif Display', serif; font-size: 1.35rem; color: var(--navy); margin-bottom: 0.75rem; line-height: 1.2; }
+  .timeline-bullets { list-style: none; margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.4rem; }
+  .timeline-bullets li { display: flex; gap: 0.6rem; font-size: 0.875rem; color: var(--text-mid); }
+  .timeline-bullets li::before { content: '—'; color: var(--baby-blue); flex-shrink: 0; font-weight: 500; }
+  .client-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+  .client-tag { font-size: 0.75rem; background: var(--sky-light); color: var(--navy-light); border: 1px solid var(--border); padding: 0.2rem 0.65rem; border-radius: 50px; font-weight: 500; }
+
+  .certs-section { background: var(--sky-light); }
+  .certs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+  .cert-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem 1.5rem; display: flex; align-items: flex-start; gap: 1rem; transition: transform 0.2s, box-shadow 0.2s; }
+  .cert-card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(74,144,184,0.1); }
+  .cert-badge { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .cert-badge.papercut { background: #e8f5f0; }
+  .cert-badge.kyocera { background: #e8f0f5; }
+  .cert-badge.myq { background: #f0f0f8; }
+  .cert-name { font-size: 0.875rem; font-weight: 500; color: var(--navy); line-height: 1.35; }
+  .cert-vendor { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.15rem; }
+
+  .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
+  .skill-group h4 { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.75rem; }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .skill-tag { font-size: 0.8rem; background: var(--sky); color: var(--navy-light); border-radius: 6px; padding: 0.25rem 0.65rem; }
+
+  .edu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+  .edu-card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem; border-top: 3px solid var(--baby-blue); }
+  .edu-degree { font-family: 'DM Serif Display', serif; font-size: 1.1rem; color: var(--navy); margin-bottom: 0.25rem; }
+  .edu-school { font-size: 0.875rem; color: var(--blue); font-weight: 500; margin-bottom: 0.25rem; }
+  .edu-dates { font-size: 0.8rem; color: var(--text-muted); }
+
+  .about-section { background: var(--sky-light); }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+  .about-text p { font-size: 1rem; color: var(--text-mid); line-height: 1.8; margin-bottom: 1rem; }
+  .about-extras { display: flex; flex-direction: column; gap: 1rem; }
+  .extra-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem 1.5rem; display: flex; gap: 1rem; align-items: flex-start; }
+  .extra-icon { font-size: 24px; flex-shrink: 0; line-height: 1.2; }
+  .extra-title { font-size: 0.9rem; font-weight: 500; color: var(--navy); margin-bottom: 0.2rem; }
+  .extra-sub { font-size: 0.8rem; color: var(--text-muted); }
+
+  .contact-section { background: var(--navy); color: white; }
+  .contact-section .section-label { color: var(--baby-blue); }
+  .contact-section .section-label::before { background: var(--baby-blue); }
+  .contact-section .section-title { color: white; }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+  .contact-text { font-size: 1rem; color: rgba(255,255,255,0.7); line-height: 1.8; }
+  .contact-links { display: flex; flex-direction: column; gap: 1rem; }
+  .contact-link { display: flex; align-items: center; gap: 1rem; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; padding: 1.1rem 1.5rem; text-decoration: none; color: white; font-size: 0.9rem; transition: background 0.2s, transform 0.15s; }
+  .contact-link:hover { background: rgba(255,255,255,0.13); transform: translateX(4px); }
+  .contact-link-icon { width: 36px; height: 36px; background: var(--baby-blue); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; color: var(--navy); font-weight: 600; }
+  .contact-link-label { font-size: 0.75rem; color: rgba(255,255,255,0.5); }
+  .contact-link-value { font-weight: 500; color: white; }
+
+  footer { background: #111d2b; padding: 1.5rem 2rem; text-align: center; font-size: 0.8rem; color: rgba(255,255,255,0.3); }
+  footer a { color: rgba(255,255,255,0.5); text-decoration: none; }
+
+  /* Animations — only activate when JS confirms it's running */
+  .js-loaded .animate { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .js-loaded .animate.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 768px) {
+    .hero-inner { grid-template-columns: 1fr; }
+    .hero-card { display: none; }
+    .about-grid { grid-template-columns: 1fr; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    section { padding: 3.5rem 1.25rem; }
   }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
-  <span class="nav-name">Matthew Hicks</span>
-  <span class="nav-location">Omaha, NE</span>
+  <a href="#" class="nav-logo">Matt Hicks</a>
+  <ul class="nav-links">
+    <li><a href="#what-i-do">Expertise</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#certifications">Certifications</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="ai-badge">
+    <span class="ai-badge-dot"></span>
+    AI Info
+    <div class="ai-tooltip">Website code by Claude AI &middot; Content by me &middot; Styling and layout by both.</div>
+  </div>
 </nav>
 
-<!-- HERO: merged intro + about -->
-<div class="hero">
-  <div class="hero-left">
-    <div class="headshot-area">
-      <!-- Replace the div below with: <img src="your-photo.jpg" alt="Matthew Hicks"> -->
-      <div class="headshot-placeholder">
-        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="32" cy="24" r="12" stroke="currentColor" stroke-width="2"/>
-          <path d="M8 56c0-13.255 10.745-24 24-24s24 10.745 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        <span>Add headshot</span>
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-eyebrow">Print Solutions Specialist</div>
+      <h1><em>Matt Hicks</em></h1>
+      <p class="hero-bio">
+        A Print Solutions Specialist with hands-on expertise in Kyocera and Epson hardware and software. I work with enterprise print management platforms such as PaperCut, MyQ, and cloud-based document workflows. I work with businesses of all sizes to modernize how their offices handle printing, scanning, and document flow. My current focus is on replacing outdated workflows with secure solutions that connect directly to modern document management and sharing.<br><br>I'd love to talk!
+      </p>
+      <div class="hero-cta">
+        <a href="#experience" class="btn-primary">View My Work</a>
+        <a href="#contact" class="btn-secondary">Get In Touch</a>
       </div>
     </div>
-    <div class="hero-nameplate">
-      <p class="hero-tag">Sales Engineering &amp; Technical Solutions</p>
-      <h1 class="hero-name">Matthew<br><em>Hicks</em></h1>
-    </div>
-  </div>
-
-  <div class="hero-right">
-    <div class="hero-bio">
-      <p>I'm an IT professional with a strong foundation in hands-on technical support and print management systems. I've spent the last few years in the field — installing, configuring, and troubleshooting enterprise equipment — while building real relationships with clients and their IT teams.</p>
-      <p>What sets me apart is <strong>how I communicate.</strong> I translate technical jargon into plain language and help clients feel confident in their technology decisions. I'm pursuing a B.S. in Information Technology at Bellevue University and actively targeting roles in <strong>sales engineering, technical account management, or pre-sales support.</strong></p>
-    </div>
-
-    <div class="hero-divider"></div>
-
-    <div class="hero-contact">
-      <span>(951) 454-4590</span>
-      <span>mahicks612@gmail.com</span>
-      <span>linkedin.com/in/matthew-hicks-114521237</span>
-    </div>
-
-    <div class="certs-inline">
-      <p class="certs-label">Certifications &amp; Achievements</p>
-      <ul class="cert-list">
-        <li>MyQ X Certified</li>
-        <li>MyQ Roger Certified</li>
-        <li>PaperCut MF Certified — Tech Foundation</li>
-        <li>PaperCut MF Certified — High Availability</li>
-        <li>Eagle Scout, Class of 2019</li>
-      </ul>
-    </div>
-  </div>
-</div>
-
-<!-- VALUE PROP -->
-<section class="value-section">
-  <p class="section-label">Why Sales Engineering</p>
-  <h2 class="section-title" style="max-width:480px;">What I bring to a<br>sales-led team.</h2>
-  <div class="value-grid">
-    <div class="value-card">
-      <div class="value-num">01</div>
-      <div class="value-title">Real-World Technical Credibility</div>
-      <div class="value-body">I've installed and managed enterprise print and IT systems firsthand. When I demo a product, clients know I'm not reading from a script — I've lived the workflow.</div>
-    </div>
-    <div class="value-card">
-      <div class="value-num">02</div>
-      <div class="value-title">Client-Facing Communication</div>
-      <div class="value-body">1,200+ help desk calls taught me how to listen, diagnose, and explain clearly under pressure. I translate technical complexity into confident, digestible answers.</div>
-    </div>
-    <div class="value-card">
-      <div class="value-num">03</div>
-      <div class="value-title">Collaborative by Nature</div>
-      <div class="value-body">Whether coaching youth basketball or working alongside client IT teams, I thrive in a supporting role — helping others succeed rather than chasing individual credit.</div>
+    <div class="hero-card">
+      <div class="hero-card-title">By the numbers</div>
+      <div class="stat-row">
+        <div class="stat-box"><div class="stat-number">3,000+</div><div class="stat-label">Devices managed</div></div>
+        <div class="stat-box"><div class="stat-number">7</div><div class="stat-label">Vendor certifications</div></div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-box"><div class="stat-number">3+</div><div class="stat-label">Years in technical roles</div></div>
+        <div class="stat-box"><div class="stat-number">7+</div><div class="stat-label">Years in customer-facing roles</div></div>
+      </div>
+      <div class="hero-location"><span class="dot"></span>Available — Omaha, NE</div>
     </div>
   </div>
 </section>
 
-<!-- EXPERIENCE -->
+<section class="what-i-do" id="what-i-do">
+  <div class="section-inner">
+    <div class="section-label">Expertise</div>
+    <h2 class="section-title">What I do best</h2>
+    <div class="focus-grid">
+      <div class="focus-card animate"><div class="focus-icon">🔧</div><h3>Technical Support &amp; Installation</h3><p>Collaborating with client IT teams to scope, plan, and execute complex software integrations in Windows and networked environments, with hands-on support from install through post-deployment.</p></div>
+      <div class="focus-card animate"><div class="focus-icon">🖥️</div><h3>Pre-Sales Solutions Engineering</h3><p>Conducting software demos, participating in sales calls, and serving as the technical bridge between sales teams and customer IT departments throughout the evaluation and implementation process.</p></div>
+      <div class="focus-card animate"><div class="focus-icon">☁️</div><h3>Workflow Modernization</h3><p>Migrating clients from legacy scan-to-email (SMTP) and scan-to-folder protocols to modern, cloud-based document solutions — bringing efficiency and security to organizations stuck on outdated infrastructure.</p></div>
+      <div class="focus-card animate"><div class="focus-icon">🖨️</div><h3>Enterprise Fleet Management</h3><p>Deploying and administering print management platforms including PaperCut MF, MyQ, Umango, and Kyocera Cloud Capture across SMB and enterprise accounts — managing 3,000+ devices end-to-end.</p></div>
+    </div>
+  </div>
+</section>
+
 <section id="experience">
-  <p class="section-label">Experience</p>
-  <h2 class="section-title">Where I've been.</h2>
-  <div class="exp-list">
+  <div class="section-inner">
+    <div class="section-label">Experience</div>
+    <h2 class="section-title">Where I've been</h2>
+    <div class="timeline">
 
-    <div class="exp-item">
-      <div class="exp-meta">
-        <div class="exp-company">All Makes Office Equipment</div>
-        <div class="exp-period">Aug 2025 — Present</div>
-      </div>
-      <div class="exp-content">
-        <div class="exp-title">Application Administrator — MyQ</div>
-        <ul class="exp-bullets">
-          <li>Install, modify, and maintain MyQ centralized print management server software</li>
-          <li>Manage all printers, copiers, print queues, and users in-house</li>
-          <li>Work directly with client IT departments on their own MyQ deployments</li>
+      <div class="timeline-item animate">
+        <div class="timeline-meta">
+          <span class="timeline-date">Aug 2024 – Present</span>
+          <span class="timeline-company">All Makes Office Equipment Co. · Omaha, NE</span>
+        </div>
+        <div class="timeline-title">Print Solutions Specialist</div>
+        <p style="font-size:0.9rem;color:var(--text-mid);margin-bottom:0.25rem;">Promoted to an expanded role encompassing pre-sales consulting, enterprise software deployment, and cross-functional customer engagement.</p>
+        <ul class="timeline-bullets">
+          <li>Conduct pre-sales demos and participate in sales calls as the primary technical advisor for software solutions</li>
+          <li>Serve as the liaison between the sales team and customer IT departments during evaluation and implementation</li>
+          <li>Manage deployments and provide technical support for a 3,000+ device fleet serving SMB and enterprise clients</li>
+          <li>Leading modernization initiative migrating clients from legacy SMTP and scan-to-folder to cloud-based document workflows</li>
+          <li>Deploy PaperCut MF, MyQ, Umango, and Kyocera Cloud Capture; support wide-format Epson plotter installations with Adobe Acrobat-based workflows</li>
+          <li>Generate independent professional services revenue through training, configuration, and post-sales implementation</li>
         </ul>
       </div>
-    </div>
 
-    <div class="exp-item">
-      <div class="exp-meta">
-        <div class="exp-company">All Makes Office Equipment</div>
-        <div class="exp-period">Sept 2024 — Aug 2025</div>
-      </div>
-      <div class="exp-content">
-        <div class="exp-title">IT Support Specialist</div>
-        <ul class="exp-bullets">
-          <li>Installed and supported a full fleet of Kyocera, Epson, and Clickshare office equipment</li>
-          <li>Managed KFS, ERS, and SMTP2GO to organize groups, push firmware, and update scan settings</li>
-          <li>Provided remote support via viewing software; configured MDF/IDF network setups</li>
+      <div class="timeline-item animate">
+        <div class="timeline-meta">
+          <span class="timeline-date">Sept 2023 – Aug 2024</span>
+          <span class="timeline-company">All Makes Office Equipment Co. · Omaha, NE</span>
+        </div>
+        <div class="timeline-title">IT Support Specialist</div>
+        <ul class="timeline-bullets">
+          <li>Installed and supported a full fleet of office equipment including Kyocera and Epson devices, wide-format plotters, and ClickShare collaboration systems</li>
+          <li>Managed KFS, ERS, and SMTP2GO platforms to configure device groups, push firmware updates, and maintain scan and network settings</li>
+          <li>Utilized remote viewing tools to diagnose and resolve client issues; modified MDF/IDF network configurations to ensure device connectivity</li>
         </ul>
       </div>
-    </div>
 
-    <div class="exp-item">
-      <div class="exp-meta">
-        <div class="exp-company">Creighton University — IT</div>
-        <div class="exp-period">Oct 2022 — Sept 2024</div>
-      </div>
-      <div class="exp-content">
-        <div class="exp-title">Tier 1 Help Desk Technician</div>
-        <ul class="exp-bullets">
-          <li>Resolved IT issues across 4 campuses including the dental clinic</li>
-          <li>Handled approximately 1,200 inbound calls and 300 walk-up support requests</li>
-          <li>Communicated escalations clearly and efficiently to Tier 2 and 3 teams</li>
+      <div class="timeline-item animate">
+        <div class="timeline-meta">
+          <span class="timeline-date">Oct 2022 – Sept 2024</span>
+          <span class="timeline-company">Creighton University – Division of IT · Omaha, NE</span>
+        </div>
+        <div class="timeline-title">Tier 1 Help Desk Technician</div>
+        <ul class="timeline-bullets">
+          <li>Provided IT support across 4 Creighton campuses including the dental clinic, handling approximately 1,200 calls and 300 walk-up requests</li>
+          <li>Diagnosed and resolved hardware, software, and network issues; escalated complex cases with clear documentation</li>
+          <li>Consistently chosen as go-to escalation contact for complex issues by colleagues and supervisors</li>
         </ul>
       </div>
-    </div>
 
-    <div class="exp-item">
-      <div class="exp-meta">
-        <div class="exp-company">Creighton University</div>
-        <div class="exp-period">May 2023 — Aug 2023</div>
-      </div>
-      <div class="exp-content">
-        <div class="exp-title">Call Router</div>
-        <ul class="exp-bullets">
-          <li>Received and routed calls from the main University phone line</li>
-        </ul>
-      </div>
     </div>
-
   </div>
 </section>
 
-<!-- SKILLS -->
+<section class="certs-section" id="certifications">
+  <div class="section-inner">
+    <div class="section-label">Certifications</div>
+    <h2 class="section-title">Vendor-certified expertise</h2>
+    <div class="certs-grid">
+      <div class="cert-card animate"><div class="cert-badge papercut">📄</div><div><div class="cert-name">PaperCut Hive — Tech Foundation</div><div class="cert-vendor">PaperCut</div></div></div>
+      <div class="cert-card animate"><div class="cert-badge papercut">📄</div><div><div class="cert-name">PaperCut MF — Tech Foundation</div><div class="cert-vendor">PaperCut</div></div></div>
+      <div class="cert-card animate"><div class="cert-badge papercut">📄</div><div><div class="cert-name">PaperCut MF — High Availability</div><div class="cert-vendor">PaperCut</div></div></div>
+      <div class="cert-card animate"><div class="cert-badge kyocera">🖨️</div><div><div class="cert-name">Kyocera Cloud Capture</div><div class="cert-vendor">Kyocera</div></div></div>
+      <div class="cert-card animate"><div class="cert-badge kyocera">🖨️</div><div><div class="cert-name">Kyocera Cloud Print and Scan</div><div class="cert-vendor">Kyocera</div></div></div>
+      <div class="cert-card animate"><div class="cert-badge myq">⚙️</div><div><div class="cert-name">MyQ Roger — Certified Technician</div><div class="cert-vendor">MyQ</div></div></div>
+      <div class="cert-card animate"><div class="cert-badge myq">⚙️</div><div><div class="cert-name">MyQ X — Certified Technician</div><div class="cert-vendor">MyQ</div></div></div>
+    </div>
+  </div>
+</section>
+
 <section id="skills">
-  <p class="section-label">Skills</p>
-  <h2 class="section-title">What I work with.</h2>
-  <div class="skills-grid">
-    <div class="skill-group">
-      <div class="skill-group-title">Print Management</div>
-      <div class="skill-tags">
-        <span class="skill-tag">MyQ X</span>
-        <span class="skill-tag">PaperCut MF</span>
-        <span class="skill-tag">KFS</span>
-        <span class="skill-tag">ERS</span>
-      </div>
+  <div class="section-inner">
+    <div class="section-label">Technical Skills</div>
+    <h2 class="section-title">Tools of the trade</h2>
+    <div class="skills-grid">
+      <div class="skill-group animate"><h4>Print Management</h4><div class="skill-tags"><span class="skill-tag">PaperCut MF</span><span class="skill-tag">PaperCut Hive</span><span class="skill-tag">MyQ X</span><span class="skill-tag">MyQ Roger</span><span class="skill-tag">Umango</span></div></div>
+      <div class="skill-group animate"><h4>Hardware &amp; Devices</h4><div class="skill-tags"><span class="skill-tag">Kyocera MFPs</span><span class="skill-tag">Epson Wide-Format</span><span class="skill-tag">ClickShare</span><span class="skill-tag">36" Plotters</span></div></div>
+      <div class="skill-group animate"><h4>Cloud &amp; Workflow</h4><div class="skill-tags"><span class="skill-tag">Kyocera Cloud Capture</span><span class="skill-tag">Kyocera Cloud Print</span><span class="skill-tag">SMTP2GO</span><span class="skill-tag">Cloud Migration</span></div></div>
+      <div class="skill-group animate"><h4>Platforms &amp; Tools</h4><div class="skill-tags"><span class="skill-tag">Windows Server</span><span class="skill-tag">Adobe Acrobat</span><span class="skill-tag">Adobe Photoshop</span><span class="skill-tag">Adobe InDesign</span><span class="skill-tag">KFS / ERS</span></div></div>
+      <div class="skill-group animate"><h4>Solutions &amp; Sales</h4><div class="skill-tags"><span class="skill-tag">Pre-Sales Engineering</span><span class="skill-tag">Software Demos</span><span class="skill-tag">RFP Support</span><span class="skill-tag">IT Consulting</span></div></div>
+      <div class="skill-group animate"><h4>Networking</h4><div class="skill-tags"><span class="skill-tag">MDF/IDF Config</span><span class="skill-tag">Device Networking</span><span class="skill-tag">SMTP / Scan Protocols</span><span class="skill-tag">Remote Diagnostics</span></div></div>
     </div>
-    <div class="skill-group">
-      <div class="skill-group-title">Hardware &amp; Devices</div>
-      <div class="skill-tags">
-        <span class="skill-tag">Kyocera</span>
-        <span class="skill-tag">Epson</span>
-        <span class="skill-tag">Clickshare</span>
-        <span class="skill-tag">MDF/IDF Networking</span>
+  </div>
+</section>
+
+<section style="background:var(--cream);" id="education">
+  <div class="section-inner">
+    <div class="section-label">Education</div>
+    <h2 class="section-title">Always learning</h2>
+    <div class="edu-grid">
+      <div class="edu-card animate">
+        <div class="edu-degree">B.S. Information Technology</div>
+        <div class="edu-school">Bellevue University</div>
+        <div class="edu-dates">2025 – Present · Omaha, NE</div>
       </div>
-    </div>
-    <div class="skill-group">
-      <div class="skill-group-title">IT Support</div>
-      <div class="skill-tags">
-        <span class="skill-tag">Help Desk</span>
-        <span class="skill-tag">Remote Support</span>
-        <span class="skill-tag">Ticketing Systems</span>
-        <span class="skill-tag">Escalation Mgmt</span>
-      </div>
-    </div>
-    <div class="skill-group">
-      <div class="skill-group-title">Software &amp; Tools</div>
-      <div class="skill-tags">
-        <span class="skill-tag">SMTP2GO</span>
-        <span class="skill-tag">Remote Viewing</span>
-        <span class="skill-tag">Firmware Management</span>
-      </div>
-    </div>
-    <div class="skill-group">
-      <div class="skill-group-title">Client-Facing</div>
-      <div class="skill-tags">
-        <span class="skill-tag">Technical Communication</span>
-        <span class="skill-tag">Client IT Liaison</span>
-        <span class="skill-tag">Demos &amp; Training</span>
-      </div>
-    </div>
-    <div class="skill-group">
-      <div class="skill-group-title">Education</div>
-      <div class="skill-tags">
-        <span class="skill-tag">B.S. IT — Bellevue</span>
-        <span class="skill-tag">CS — Creighton</span>
+      <div class="edu-card animate">
+        <div class="edu-degree">Computer Science Coursework</div>
+        <div class="edu-school">Creighton University</div>
+        <div class="edu-dates">2020 – 2024 · Omaha, NE</div>
+        <p style="margin-top:0.75rem;font-size:0.85rem;color:var(--text-muted);">Includes Adobe Photoshop &amp; InDesign (Graphic Design)</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CONTACT -->
-<section id="contact">
-  <p class="section-label">Contact</p>
-  <div class="contact-grid">
-    <div class="contact-copy">
-      <h2 class="section-title">Let's talk<br><em>opportunities.</em></h2>
-      <p>I'm actively looking for sales engineering, technical account management, or pre-sales roles where I can apply my hands-on IT background to support a sales team.</p>
-      <p>If you're building a team that needs someone who can talk tech with clients and make complex solutions feel approachable, reach out.</p>
+<section class="about-section" id="about">
+  <div class="section-inner">
+    <div class="section-label">About</div>
+    <h2 class="section-title">A bit more about me</h2>
+    <div class="about-grid">
+      <div class="about-text animate">
+        <p>I got into IT because I love curating experiences tailored to individual needs — whether that's designing a print management solution for a 450+ device enterprise or helping my mom pick the right laptop for work. My favorite part about it is creating relationships through what I do, created by the process of understanding those needs, proposing the best solutions, and building trust (on both sides) in the partnership.</p>
+        <p>Other than the exciting world of print solutions, I love diving into projects that allow me opportunities to learn! Woodworking is a big one — I also like consumer electronics, geography, local history, information archival, and I can even juggle.</p>
+      </div>
+      <div class="about-extras animate">
+        <div class="extra-card">
+          <div class="extra-icon">🦅</div>
+          <div><div class="extra-title">Eagle Scout — Class of 2019</div><div class="extra-sub">Troop 1969 · Corona, CA — the highest rank in Scouting, earned through leadership, service, and perseverance.</div></div>
+        </div>
+        <div class="extra-card">
+          <div class="extra-icon">🏀</div>
+          <div><div class="extra-title">Youth Basketball Coach</div><div class="extra-sub">YMCA · Fall 2025 — coaching the next generation and keeping it fun.</div></div>
+        </div>
+        <div class="extra-card">
+          <div class="extra-icon">📍</div>
+          <div><div class="extra-title">Based in Omaha, Nebraska</div><div class="extra-sub">Working with SMB and enterprise clients across the region.</div></div>
+        </div>
+      </div>
     </div>
-    <div class="contact-items">
-      <div class="contact-item">
-        <div class="contact-item-label">Email</div>
-        <div class="contact-item-value">mahicks612@gmail.com</div>
-      </div>
-      <div class="contact-item">
-        <div class="contact-item-label">Phone</div>
-        <div class="contact-item-value">(951) 454-4590</div>
-      </div>
-      <div class="contact-item">
-        <div class="contact-item-label">LinkedIn</div>
-        <div class="contact-item-value">linkedin.com/in/matthew-hicks-114521237</div>
-      </div>
-      <div class="contact-item">
-        <div class="contact-item-label">Location</div>
-        <div class="contact-item-value">Omaha, NE</div>
+  </div>
+</section>
+
+<section class="contact-section" id="contact">
+  <div class="section-inner">
+    <div class="section-label">Contact</div>
+    <h2 class="section-title">Let's connect</h2>
+    <div class="contact-grid">
+      <p class="contact-text">I'm always up for a chat. Reach out via email or connect with me on LinkedIn — I'd love to hear from you!</p>
+      <div class="contact-links">
+        <a href="/cdn-cgi/l/email-protection#d7bab6bfbeb4bca4e1e6e597b0bab6bebbf9b4b8ba" class="contact-link">
+          <div class="contact-link-icon">✉️</div>
+          <div><div class="contact-link-label">Email</div><div class="contact-link-value"><span class="__cf_email__" data-cfemail="c3aea2abaaa0a8b0f5f2f183a4aea2aaafeda0acae">[email&#160;protected]</span></div></div>
+        </a>
+        <a href="https://www.linkedin.com/in/matthew-hicks-114521237/" target="_blank" class="contact-link">
+          <div class="contact-link-icon">in</div>
+          <div><div class="contact-link-label">LinkedIn</div><div class="contact-link-value">matthew-hicks-114521237</div></div>
+        </a>
       </div>
     </div>
   </div>
 </section>
 
 <footer>
-  <p>Matthew Hicks</p>
-  <p>Sales Engineering &amp; Technical Solutions — 2026</p>
+  <p><a href="https://matthewahicks.com">matthewahicks.com</a></p>
 </footer>
 
-</body>
-</html>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  document.body.classList.add('js-loaded');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeo
